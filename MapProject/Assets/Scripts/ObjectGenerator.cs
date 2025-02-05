@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ObjectGenerator : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class ObjectGenerator : MonoBehaviour
     public float power = 1000f; //던지는 힘
     GameObject scoreText;       //점수 표시 텍스트
     public int score = 0;       //매니저가 없는 상태에서 만드므로 점수를 별도로 설정
+    public Material newSkybox; // 변경할 Skybox Material
 
     void Update()
     {
@@ -45,7 +47,9 @@ public class ObjectGenerator : MonoBehaviour
             //ObjectShooter의 Shoot() 함수를 public으로 설정해야 구동
             //방향에 관계없이 같은 힘을 원하므로 normalized
         }
+
     }
+
     /// <summary>
     /// 점수 획득
     /// </summary>
@@ -59,6 +63,7 @@ public class ObjectGenerator : MonoBehaviour
     {
         score += value;
         SetScoreText();     //최초 텍스트 설정
+        ChangeSkyBox();
     }
     /// <summary>
     /// 점수 텍스트 설정
@@ -68,4 +73,12 @@ public class ObjectGenerator : MonoBehaviour
     {
         scoreText.GetComponent<TextMeshProUGUI>().text=$"점수: {score}";
     }
+    public void ChangeSkyBox()
+    {
+        if (score > 20)
+        {
+            RenderSettings.skybox = newSkybox;
+        }
+    }
+
 }

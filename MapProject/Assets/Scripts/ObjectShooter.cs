@@ -8,13 +8,13 @@ public class ObjectShooter : MonoBehaviour
     // 발사 기능을 제공해주는 클래스(발사)
     // 충돌 시 오브젝트를 고정해주는 역할도 수행(발사 후 판정)
     GameObject objectGenerator;
-    ObjectGenerator obj;
+
     void Start()
     {
         objectGenerator = GameObject.Find("ObjectGenerator");
         //씬에서 해당 이름을 가진 게임오브젝트를 찾아 그 값을 얻어오는
         //GameObject.Find()기능
-       
+
         ////==오브젝트 탐색 기능==
         //objectGenerator = GameObject.FindWithTag("Generator");
         ////Generator 태그를 가진 오브젝트 탐색
@@ -26,6 +26,7 @@ public class ObjectShooter : MonoBehaviour
         //검색 범위가 많을 경우 불필요한 성능 저하 발생
         //이 때 Tag나 Type등으로 검색 범위 제한하여 탐색
         //scene에 해당 값이 없으면 null
+
     }
 
     /// <summary>
@@ -34,9 +35,10 @@ public class ObjectShooter : MonoBehaviour
     /// <param name="direction">물체의 발사 방향</param>
     public void Shoot(Vector3 direction)
     {
-        GetComponent<Rigidbody>().AddForce (direction);
+        GetComponent<Rigidbody>().AddForce(direction);
         //objectGenerator 없이 GetComponent를 사용시 
         //게임 오브젝트가 직접 GetComponent를 사용
+
     }
     /// <summary>
     /// 충돌 시 오브젝트를 고정하는 함수
@@ -57,6 +59,12 @@ public class ObjectShooter : MonoBehaviour
         {
             objectGenerator.GetComponent<ObjectGenerator>().ScorePlus(10);
             Debug.Log("맞았습니다!");
+        }
+        if(collision.gameObject.tag == "bamsongi")
+        {
+            Destroy(gameObject,1f);
+            Destroy(collision.gameObject,1f);
+
         }
 
     }

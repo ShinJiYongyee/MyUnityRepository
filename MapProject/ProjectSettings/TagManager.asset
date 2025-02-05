@@ -6,6 +6,7 @@ TagManager:
   tags:
   - terrain
   - target
+  - bamsongi
   layers:
   - Default
   - TransparentFX
