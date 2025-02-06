@@ -21,7 +21,7 @@ public class UserDataSystem : MonoBehaviour
         //data01 객체에 키 Data01의 값을 할당
         data01 = UserData.SetData(data_value);
 
-        //할당받은 data01의 값을 확ㅇ니
+        //할당받은 data01의 값을 확인
         Debug.Log(data01.GetData());
     }
 
