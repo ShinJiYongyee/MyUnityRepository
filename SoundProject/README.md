@@ -87,9 +87,9 @@ bgm보다는 일시적으로 플레이하는 사운드 이펙트에 적합
 값이 제거되었으므로 BGM의 오디오 리소스 값이 공란으로 바뀐다
 
 #### 과제
-UI를 눌러 bgm재생을 켜고 끄는 기능을 만들기
-![image](https://github.com/user-attachments/assets/8f6caeed-a064-4d49-aef3-48a0714c515c)
 
+![image](https://github.com/user-attachments/assets/8f6caeed-a064-4d49-aef3-48a0714c515c)
+UI를 눌러 bgm재생을 켜고 끄는 기능을 만들기
 UI 버튼의 OnClick()리스트에 BGM객체와 AudioSource.Play 기능 추가
 
 
