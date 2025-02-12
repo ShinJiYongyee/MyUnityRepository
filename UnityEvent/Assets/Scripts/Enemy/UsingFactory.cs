@@ -7,11 +7,14 @@ public class UsingFactory : MonoBehaviour
     void Start()
     {
         //기능 테스트
-        Enemy enemy = enemyFactory.Create(EnemyFactory.ENEMYTYPE.Goblin);
+        Enemy enemy = 
+            enemyFactory.Create(EnemyFactory.ENEMYTYPE.Goblin);
         enemy.Action();
-        Enemy enemy2 = enemyFactory.Create(EnemyFactory.ENEMYTYPE.Slime);
+        Enemy enemy2 = 
+            enemyFactory.Create(EnemyFactory.ENEMYTYPE.Slime);
         enemy2.Action();
-        Enemy enemy3 = enemyFactory.Create(EnemyFactory.ENEMYTYPE.Wolf);
+        Enemy enemy3 = 
+            enemyFactory.Create(EnemyFactory.ENEMYTYPE.Wolf);
         enemy3.Action();
 
     }
