@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class UnityDelegateSample : MonoBehaviour
+public class UnityDelegateSamples : MonoBehaviour
 {
     //Action -> 반환 타입이 없는(void) 델리게이트
     //1)매개 변수가 따로 없는(void 만 등록 가능한) 대리자
