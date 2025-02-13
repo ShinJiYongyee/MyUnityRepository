@@ -15,7 +15,7 @@ public class BasicCode2 : MonoBehaviour
     /// <summary>
     /// UI의 오브젝트 Text의 컴포넌트 text에 arg0를 등록
     /// </summary>
-    private void inputText(string arg0) 
+    public void inputText(string arg0) 
     {
         text.text = arg0;
     }

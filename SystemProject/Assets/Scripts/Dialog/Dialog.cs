@@ -4,5 +4,5 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Dialog : ScriptableObject
 {
-    public List<string> list = new List<string>();
+    public List<string> list;
 }
