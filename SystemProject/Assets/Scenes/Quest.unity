@@ -280,7 +280,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 410519437}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1975387577}
+        m_TargetAssemblyTypeName: Conversation, Assembly-CSharp
+        m_MethodName: SetDialog2
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &410519437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,9 +414,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11500000, guid: 93c3a0661fd83eb45b86dc37e424d064, type: 3}
+      - m_Target: {fileID: 1975387577}
         m_TargetAssemblyTypeName: Conversation, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: SetDialog1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1160,9 +1172,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c3a0661fd83eb45b86dc37e424d064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  message: {fileID: 0}
+  message: {fileID: 1265050494}
   delay: 0.1
-  dialogData: {fileID: 0}
+  dialogData1: {fileID: 11400000, guid: d9ff293c27eccaa44afb962eae021e6d, type: 2}
+  dialogData2: {fileID: 11400000, guid: 4b1ae616c3f193c4e8f082bc4479faa0, type: 2}
 --- !u!4 &1975387578
 Transform:
   m_ObjectHideFlags: 0
