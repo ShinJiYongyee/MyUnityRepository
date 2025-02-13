@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: DropTable
   m_EditorClassIdentifier: 
   drop_table:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 784781880942129207, guid: 3ae1f63bf0611f3449e293bbb07d5880, type: 3}
+  - {fileID: 6770567687819485863, guid: 668b183f3027f944a8037124c77e33df, type: 3}
+  - {fileID: 2939087342820013668, guid: 5a8364e9585cf7847a69ec399b2a20d3, type: 3}
+  - {fileID: 2806040976072842923, guid: 2c9be52fcdbddaf4ea860108b98075bb, type: 3}
+  - {fileID: 3729111303830147357, guid: 249734f7c73ef574b82a5fff98ccdccc, type: 3}
