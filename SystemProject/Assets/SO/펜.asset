@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50b39dfffac30224395b1c0778a92ca5, type: 3}
   m_Name: "\uD39C"
   m_EditorClassIdentifier: 
+  gameObject: {fileID: 2638173712738225945, guid: 2a44d9bd2a89f7f48944b7f5f22f5a8a, type: 3}
   id: 1
   price: 100
   description: "\uD544\uAE30\uD560 \uB54C \uC0AC\uC6A9\uD560 \uD39C\uC785\uB2C8\uB2E4"
