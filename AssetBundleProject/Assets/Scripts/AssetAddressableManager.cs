@@ -10,12 +10,10 @@ public class AssetAddressableManager : MonoBehaviour
     public AssetReferenceGameObject capsule;
     //public AssetReferenceT<GameManager> manager;
 
-    GameObject go;
+    GameObject go=null; 
 
     private void Start()
     {
-        go = new GameObject();
-
         StartCoroutine("Init"); 
     }
 
@@ -27,13 +25,30 @@ public class AssetAddressableManager : MonoBehaviour
     }
     public void OnCreateButtonEnter()
     {
+        if (go != null)
+        {
+            Debug.Log("이미 인스턴스화된 오브젝트가 있습니다!");
+            return;
+        }
+
         capsule.InstantiateAsync().Completed += (obj) =>
         {
             go = obj.Result;
         };
     }
+
+
     public void OnReleaseButtonEnter()
     {
-        Addressables.ReleaseInstance(go);   //데이터 해제
+        if (go == null)
+        {
+            Debug.Log("해제할 오브젝트가 없습니다!");
+            return;
+        }
+
+        Addressables.ReleaseInstance(go);
+        go = null;  // 참조 초기화
     }
+
+
 }

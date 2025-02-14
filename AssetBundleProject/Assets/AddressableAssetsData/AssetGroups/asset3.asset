@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: asset3
   m_GUID: 4de821151c4c27a498c1010875a14732
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 16a26be87e49b4c459f284b881b8b32a
+    m_Address: Assets/Prefabs/BlueSphere.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 503672e9a6fb9304ebeb55cb80e4869d, type: 2}
   m_SchemaSet:

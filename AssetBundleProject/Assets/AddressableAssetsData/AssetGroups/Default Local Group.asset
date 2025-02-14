@@ -14,7 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: 0544edb8a5eaaa944927696d44ed9c87
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 5ca34eb7c25c026409af835bccea7d09
+    m_Address: Assets/Prefabs/Capsule.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7903a5803b70954ca659607992d84a3
+    m_Address: Assets/Materials/Green.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Material
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 503672e9a6fb9304ebeb55cb80e4869d, type: 2}
   m_SchemaSet:
