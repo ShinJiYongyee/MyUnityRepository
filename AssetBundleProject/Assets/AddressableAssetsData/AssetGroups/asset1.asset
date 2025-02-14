@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: asset1
+  m_EditorClassIdentifier: 
+  m_GroupName: asset1
+  m_GUID: 11634a83b9c1e0e42ae0d821a2bd98b7
+  m_SerializeEntries:
+  - m_GUID: 91cc8abec770ec940b9c244a98c08b6a
+    m_Address: Assets/Prefabs/RedSphere.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 503672e9a6fb9304ebeb55cb80e4869d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d360a3832f5c78248ae3d3c003353c41, type: 2}
+    - {fileID: 11400000, guid: b45a2de48ad104f468f8364c46b784a3, type: 2}
