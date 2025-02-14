@@ -9,14 +9,11 @@ public class AssetAddressableManager : MonoBehaviour
     //AssetReferenceT는 제네릭을 이용해 특정 형태의 addressable 리소스를 참조한다
     public AssetReferenceGameObject capsule;
     //public AssetReferenceT<GameManager> manager;
-
     GameObject go=null; 
-
     private void Start()
     {
         StartCoroutine("Init"); 
     }
-
     //비동기 코드 -> 실행 중 다른 작업을 허용할 수 있다
     private IEnumerator Init()
     {
@@ -36,8 +33,6 @@ public class AssetAddressableManager : MonoBehaviour
             go = obj.Result;
         };
     }
-
-
     public void OnReleaseButtonEnter()
     {
         if (go == null)
@@ -45,10 +40,7 @@ public class AssetAddressableManager : MonoBehaviour
             Debug.Log("해제할 오브젝트가 없습니다!");
             return;
         }
-
         Addressables.ReleaseInstance(go);
         go = null;  // 참조 초기화
     }
-
-
 }
