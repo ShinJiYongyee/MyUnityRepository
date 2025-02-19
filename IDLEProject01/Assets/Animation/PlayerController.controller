@@ -180,13 +180,13 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -5202811915681942699}
-    m_Position: {x: 520, y: 180, z: 0}
+    m_Position: {x: 510, y: 170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8606347658741557338}
     m_Position: {x: 410, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4861269666486022705}
-    m_Position: {x: 522.9372, y: 339.6419, z: 0}
+    m_Position: {x: 510, y: 340, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -2154274551314145340}
@@ -206,9 +206,6 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: isIDLE
-    m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: isATTACK
     m_EventTreshold: 0
