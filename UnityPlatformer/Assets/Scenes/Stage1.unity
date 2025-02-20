@@ -1237,6 +1237,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 5346744083032049425, guid: 29a808113bee1c042a140f4ddeccdb12, type: 3}
+      propertyPath: sceneName
+      value: Stage2
+      objectReference: {fileID: 0}
     - target: {fileID: 6244845988811802377, guid: 29a808113bee1c042a140f4ddeccdb12, type: 3}
       propertyPath: m_Name
       value: Canvas
