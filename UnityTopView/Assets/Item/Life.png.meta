@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 638dd6eadac04d64dac320dbd2fff7bd
+guid: 3e445bdb764a804408df5fb5e3a07aff
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5213229242370633579
-    second: Door_0
+      213: -8770001503089466214
+    second: Life_0
+  - first:
+      213: 4974403084737825917
+    second: Life_1
+  - first:
+      213: -3859521769266734839
+    second: Life_2
+  - first:
+      213: 3111174479070320432
+    second: Life_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +55,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Door_0
+      name: Life_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 32
-        height: 32
+        x: 1
+        y: 366
+        width: 319
+        height: 111
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +137,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b6f2e24006c195840800000000000000
-      internalID: 5213229242370633579
+      spriteID: a94e5b03912ba4680800000000000000
+      internalID: -8770001503089466214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Life_1
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 244
+        width: 319
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7cc7630041a80540800000000000000
+      internalID: 4974403084737825917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Life_2
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 122
+        width: 319
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90918f34669307ac0800000000000000
+      internalID: -3859521769266734839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Life_3
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 0
+        width: 319
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0375f3b74bc1d2b20800000000000000
+      internalID: 3111174479070320432
       vertices: []
       indices: 
       edges: []
@@ -138,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Door_0: 5213229242370633579
+      Life_0: -8770001503089466214
+      Life_1: 4974403084737825917
+      Life_2: -3859521769266734839
+      Life_3: 3111174479070320432
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
