@@ -9,6 +9,6 @@ public class Background : MonoBehaviour
     void Update()
     {
         Vector2 dir = Vector2.up;
-        background.mainTextureOffset += dir * scrollSpeed * Time.deltaTime;
+        background.mainTextureOffset += dir.normalized * scrollSpeed * Time.deltaTime;
     }
 }

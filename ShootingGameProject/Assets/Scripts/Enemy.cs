@@ -9,29 +9,33 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
 
-        int rand = Random.Range(0, 10);
-
-        if (rand < 5)
-        {
-            var target = GameObject.FindGameObjectWithTag("Player");
-            dir = target.transform.position - transform.position;
-            dir.Normalize();    //방향의 크기를 1로 설정
-        }
-        else
-        {
-            dir = Vector3.down;
-        }
     }
     void Update()
     {
+        var target = GameObject.FindGameObjectWithTag("Player");
+        dir = target.transform.position - transform.position;
+        dir.Normalize();    //방향의 크기를 1로 설정
+        transform.up = -dir;
         transform.position += dir * speed * Time.deltaTime;
     }
-    private void OnCollisionEnter(Collision other)
-    {
-        GameObject explosion = Instantiate(explosionFactory);
-        explosion.transform.position = transform.position;
 
-        Destroy(other.gameObject);
-        Destroy(gameObject);
+    private void OnCollisionEnter(Collision collision)
+    {
+        int targetLayer = collision.gameObject.layer;
+
+        if (targetLayer == LayerMask.NameToLayer("Player") ||
+            targetLayer == LayerMask.NameToLayer("Bullet"))
+        {
+            GameObject explosion = Instantiate(explosionFactory);
+            explosion.transform.position = transform.position;
+            Destroy(collision.gameObject);  // 상대방 파괴
+            Destroy(gameObject);            // 자신도 파괴
+        }
+        else if (targetLayer == LayerMask.NameToLayer("Obstacle"))
+        {
+            GameObject explosion = Instantiate(explosionFactory);
+            explosion.transform.position = transform.position;
+            Destroy(gameObject);  // 자신만 파괴
+        }
     }
 }

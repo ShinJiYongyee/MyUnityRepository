@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 2534678809941544271}
   - component: {fileID: 4080871164035789853}
   - component: {fileID: 8285966972002590522}
-  - component: {fileID: 1023223676717986882}
+  - component: {fileID: 4015342668948389693}
+  - component: {fileID: 4870226874627502059}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8773193502950693263}
@@ -104,6 +105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  explosionFactory: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
 --- !u!114 &8285966972002590522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,8 +120,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 9219811149346492924, guid: 820e2776533dc9c4baaf93e6016f9d68, type: 3}
   firePosition: {fileID: 5407440385183768321}
---- !u!65 &1023223676717986882
-BoxCollider:
+--- !u!54 &4015342668948389693
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885899120842879080}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 2
+  m_CollisionDetection: 0
+--- !u!135 &4870226874627502059
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -137,7 +166,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5407440385183768321
 GameObject:
@@ -188,7 +217,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: bd16a121ccdf0674daacc3277d88c3c0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15657
+      value: 0.21039096
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: bd16a121ccdf0674daacc3277d88c3c0, type: 3}
       propertyPath: m_LocalScale.z

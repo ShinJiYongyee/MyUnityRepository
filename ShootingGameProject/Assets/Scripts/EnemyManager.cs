@@ -7,7 +7,7 @@ public class EnemyManager : MonoBehaviour
     public GameObject enemyFactory;
 
     float min = 1;
-    float max = 5;
+    float max = 64;
 
     private void Start()
     {
@@ -20,7 +20,8 @@ public class EnemyManager : MonoBehaviour
         if (currentTime > createTime)
         {
             GameObject enemy = Instantiate(enemyFactory);
-            enemy.transform.position = transform.position;
+            enemy.transform.position = new Vector3(transform.position.x, transform.position.y, 0);   
+            enemy.transform.rotation = Quaternion.Euler(0,0,0);
             currentTime = 0;
             createTime = UnityEngine.Random.Range(min, max);
 
