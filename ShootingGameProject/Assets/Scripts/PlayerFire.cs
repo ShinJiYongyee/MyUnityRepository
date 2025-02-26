@@ -7,7 +7,7 @@ public class PlayerFire : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))  
+        if (Input.GetButtonDown("Jump"))  
         {
             //ÃÑ¾Ë »ý¼º
             GameObject bulletObject = Instantiate(bullet);
