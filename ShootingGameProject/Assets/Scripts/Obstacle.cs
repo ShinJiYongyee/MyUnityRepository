@@ -2,12 +2,15 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-    public float scrollSpeed = 0.5f;     //background¿Í µ¿ÀÏ
+    public float scrollSpeed = 0.5f;     
 
     void Update()
     {
-        transform.position += -transform.up.normalized * scrollSpeed * Time.deltaTime;
-        
+        if(!GameManager.instance.isGameOver && !GameManager.instance.isGameClear)
+        {
+            transform.position += -transform.up.normalized * scrollSpeed * Time.deltaTime;
+        }
+
     }
     private void OnCollisionEnter(Collision collision)
     {

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - InvisibleWall
   - FxTemporaire
+  - ScoreManager
   layers:
   - Default
   - TransparentFX

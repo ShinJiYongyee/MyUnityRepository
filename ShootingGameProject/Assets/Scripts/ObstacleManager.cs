@@ -14,7 +14,7 @@ public class ObstacleManager : MonoBehaviour
     public float scrollSpeed = 1.0f;
 
     float min = 5;
-    float max = 20;
+    float max = 15;
 
     private void Start()
     {
@@ -22,6 +22,14 @@ public class ObstacleManager : MonoBehaviour
         selector = Random.Range(0, 3);
     }
     private void Update()
+    {
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear)
+        {
+            RandomCreate();
+        }
+
+    }
+    void RandomCreate()
     {
         currentTime += Time.deltaTime;
 
@@ -47,9 +55,6 @@ public class ObstacleManager : MonoBehaviour
             selector = Random.Range(0, 3);
 
         }
-
-
-
     }
 
 }
