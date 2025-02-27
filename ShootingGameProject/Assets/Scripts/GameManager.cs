@@ -19,8 +19,13 @@ public class GameManager : MonoBehaviour
     public int timeLeft = 60; // 게임 제한 시간
     private float timePassed;
 
+    [Header("Game Status")]
     public bool isGameOver = false;
     public bool isGameClear = false;
+
+    [Header("Penalty")]
+    public float penalty;
+    public float maxPenalty=4;
 
     void Awake()
     {
@@ -43,6 +48,8 @@ public class GameManager : MonoBehaviour
         StageText.text = $"Stage {ScoreManager.currentStage}";
         UpdateTimerUI();
         InvokeRepeating(nameof(DecreaseTime), 1f, 1f); // 매 초마다 타이머 감소
+
+        penalty = 0;
     }
 
     void Update()
@@ -88,11 +95,13 @@ public class GameManager : MonoBehaviour
     {
         ScoreManager.currentStage = 1;
         ScoreManager.currentScore = 0;
+        penalty = 0;
         SceneManager.LoadScene("Stage1");
     }
     public void NextStage()
     {
         ScoreManager.currentStage++;
+        penalty = 0;
         SceneManager.LoadScene("Stage1");
     }
 }

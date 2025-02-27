@@ -2,12 +2,16 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed = 5.0f;
+    public float speed = 1.0f;
     Vector3 dir;
     public GameObject explosionFactory;
     private void Start()
     {
-
+        if(ScoreManager.currentStage < 4)
+        {
+            speed += ScoreManager.currentStage;
+        }
+        speed += GameManager.instance.penalty;
     }
     void Update()
     {
@@ -24,6 +28,7 @@ public class Enemy : MonoBehaviour
         dir.Normalize();    //방향의 크기를 1로 설정
         transform.up = -dir;
         transform.position += dir * speed * Time.deltaTime;
+
     }
 
     private void OnCollisionEnter(Collision collision)

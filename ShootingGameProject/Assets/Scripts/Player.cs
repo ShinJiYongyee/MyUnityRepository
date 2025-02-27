@@ -9,10 +9,13 @@ public class Player : MonoBehaviour
     public GameObject bullet;    //ÃÑ¾Ë ÇÁ¸®ÆÕ
     public GameObject firePosition;     //ÃÑ ¹ß»ç À§Ä¡
 
+    float playerStopped;
+    float originalPenalty;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-
+        playerStopped = 0;
+        originalPenalty = GameManager.instance.penalty;
     }
 
     void Update()
@@ -61,10 +64,8 @@ public class Player : MonoBehaviour
         transform.position += dir * speed * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, transform.position.y, 0);
 
-        if (h == 0 && v == 0)
-        {
-            rb.linearVelocity = Vector3.zero;
-        }
+        PlayerStoppedTimeAdd(h, v);
+
     }
     void PlayerAim()
     {
@@ -74,6 +75,27 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y, 0);
 
         transform.up = direction;
+    }
+    void PlayerStoppedTimeAdd(float h, float v)
+    {
+        if (h == 0 && v == 0)
+        {
+            rb.linearVelocity = Vector3.zero;
+            if (playerStopped <= GameManager.instance.maxPenalty && (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear))
+            {
+                playerStopped += (Time.deltaTime / 100.0f);
+            }
+            else
+            {
+                playerStopped = 0;
+            }
+            GameManager.instance.penalty += playerStopped;
+        }
+        else
+        {
+            GameManager.instance.penalty = originalPenalty;
+
+        }
     }
 
 }

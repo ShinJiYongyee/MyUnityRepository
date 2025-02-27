@@ -1280,7 +1280,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1546279898}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: Stage2
+        m_MethodName: NextStage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2989,9 +2989,11 @@ MonoBehaviour:
   timerText: {fileID: 944755872}
   StageText: {fileID: 480970418}
   ScoreText: {fileID: 594082877}
-  timeLeft: 10
+  timeLeft: 60
   isGameOver: 0
   isGameClear: 0
+  penalty: 0
+  maxPenalty: 4
 --- !u!4 &1546279899
 Transform:
   m_ObjectHideFlags: 0
