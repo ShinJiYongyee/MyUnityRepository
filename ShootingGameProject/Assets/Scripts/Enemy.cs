@@ -7,9 +7,13 @@ public class Enemy : MonoBehaviour
     public GameObject explosionFactory;
     private void Start()
     {
-        if(ScoreManager.currentStage < 4)
+        if(ScoreManager.currentStage <= 4)
         {
             speed += ScoreManager.currentStage;
+        }
+        else
+        {
+            speed += 4;
         }
         speed += GameManager.instance.penalty;
     }

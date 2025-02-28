@@ -3,11 +3,11 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     float currentTime;
-    public float createTime = 1;
+    float createTime = 1;
     public GameObject enemyFactory;
 
-    float min = 1;
-    float max = 32;
+    float min = 4;
+    float max = 64;
 
     private void Start()
     {

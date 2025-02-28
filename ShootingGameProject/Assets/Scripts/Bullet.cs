@@ -12,6 +12,15 @@ public class Bullet : MonoBehaviour
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
         mousePosition.z = 0;
         direction = new Vector3(mousePosition.x-transform.position.x, mousePosition.y-transform.position.y, 0);
+        if(ScoreManager.currentStage <= 5)
+        {
+            speed += ScoreManager.currentStage;
+
+        }
+        else
+        {
+            speed += 5;
+        }
  
         transform.up = direction;
     }

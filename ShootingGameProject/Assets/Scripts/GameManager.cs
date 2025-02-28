@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public Text ScoreText;
 
     [Header("Game Variables")]
-    public int timeLeft = 60; // 게임 제한 시간
+    int timeLeft = 15; // 게임 제한 시간
     private float timePassed;
 
     [Header("Game Status")]
@@ -45,6 +45,14 @@ public class GameManager : MonoBehaviour
         gameClearSprite.SetActive(false);
         retryButton.SetActive(false);
         nextStageButton.SetActive(false);
+        if(ScoreManager.currentStage <=3)
+        {
+            timeLeft += ScoreManager.currentStage * 15;
+        }
+        else
+        {
+            timeLeft = 60;
+        }
         StageText.text = $"Stage {ScoreManager.currentStage}";
         UpdateTimerUI();
         InvokeRepeating(nameof(DecreaseTime), 1f, 1f); // 매 초마다 타이머 감소
