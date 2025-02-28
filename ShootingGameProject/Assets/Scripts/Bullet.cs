@@ -11,8 +11,9 @@ public class Bullet : MonoBehaviour
         Vector3 mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
         mousePosition.z = 0;
-        direction = new Vector3(mousePosition.x-transform.position.x, mousePosition.y-transform.position.y, 0);
-        if(ScoreManager.currentStage <= 5)
+        direction = Player.direction;
+
+        if (ScoreManager.currentStage <= 5)
         {
             speed += ScoreManager.currentStage;
 
@@ -21,8 +22,8 @@ public class Bullet : MonoBehaviour
         {
             speed += 5;
         }
- 
         transform.up = direction;
+;
     }
     void Update()
     {

@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
 
     float playerStopped;
     float originalPenalty;
+    public static Vector3 direction;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -92,7 +93,7 @@ public class Player : MonoBehaviour
         Vector3 mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
         mousePosition.z = 0;
-        Vector3 direction = new Vector3(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y, 0);
+        direction = new Vector3(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y, 0);
 
         transform.up = direction;
     }
