@@ -1,2 +1,7 @@
-# MyUnityRepository
- to study Unity
+# 미사일 피하기
+우주선을 몰아 사방에서 날아오는 미사일을 피하며 살아남는 게임입니다.<br>
+wasd로 움직이며 마우스 좌클릭으로 로켓을 쏘세요.<br>
+가만히 머무르면 미사일의 속도가 빨라지므로, 쉴 틈 없이 움직이세요.<br>
+가끔 내려오는 데브리는 파괴할 수 없으므로 열심히 피하거나, 미사일을 막는 데 이용하세요.<br>
+행운을 빕니다!
+![image](https://github.com/user-attachments/assets/d68be315-53b8-48c4-a2a8-3430118127aa)
