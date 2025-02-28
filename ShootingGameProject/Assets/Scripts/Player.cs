@@ -8,6 +8,11 @@ public class Player : MonoBehaviour
 
     public GameObject bullet;    //ÃÑ¾Ë ÇÁ¸®ÆÕ
     public GameObject firePosition;     //ÃÑ ¹ß»ç À§Ä¡
+    public GameObject firePositionRightInner;     //ÃÑ ¹ß»ç À§Ä¡
+    public GameObject firePositionLeftInner;     //ÃÑ ¹ß»ç À§Ä¡
+    public GameObject firePositionRightOuter;     //ÃÑ ¹ß»ç À§Ä¡
+    public GameObject firePositionLeftOuter;     //ÃÑ ¹ß»ç À§Ä¡
+
 
     float playerStopped;
     float originalPenalty;
@@ -53,6 +58,21 @@ public class Player : MonoBehaviour
             GameObject bulletObject = Instantiate(bullet);
             //ÃÑ¾Ë À§Ä¡ º¯°æ
             bulletObject.transform.position = firePosition.transform.position;
+
+            if (ScoreManager.currentStage >= 2)
+            {
+                GameObject bulletObjectRightInner = Instantiate(bullet);
+                GameObject bulletObjectLeftInner = Instantiate(bullet);
+                bulletObjectRightInner.transform.position = firePositionRightInner.transform.position;
+                bulletObjectLeftInner.transform.position = firePositionLeftInner.transform.position;
+            }
+            if (ScoreManager.currentStage >= 3)
+            {
+                GameObject bulletObjectRightOuter = Instantiate(bullet);
+                GameObject bulletObjectLeftOuter = Instantiate(bullet);
+                bulletObjectRightOuter.transform.position = firePositionRightOuter.transform.position;
+                bulletObjectLeftOuter.transform.position = firePositionLeftOuter.transform.position;
+            }
         }
     }
     void PlayerMove()

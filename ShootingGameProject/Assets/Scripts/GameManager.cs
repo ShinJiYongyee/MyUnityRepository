@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameClearSprite;
     public GameObject retryButton;
     public GameObject nextStageButton;
+    public GameObject quitGameButton;
     public Text timerText;  // 타이머 텍스트 (UI에 표시)
     public Text StageText;
     public Text ScoreText;
@@ -25,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Penalty")]
     public float penalty;
-    public float maxPenalty=4;
+    public float maxPenalty = 4;
 
     void Awake()
     {
@@ -45,7 +46,8 @@ public class GameManager : MonoBehaviour
         gameClearSprite.SetActive(false);
         retryButton.SetActive(false);
         nextStageButton.SetActive(false);
-        if(ScoreManager.currentStage <=3)
+        quitGameButton.SetActive(false);
+        if (ScoreManager.currentStage <= 3)
         {
             timeLeft += ScoreManager.currentStage * 15;
         }
@@ -64,9 +66,18 @@ public class GameManager : MonoBehaviour
     {
         CheckPlayerDied();
         ScoreText.text = "Kill Count = " + ScoreManager.currentScore;
-        if (isGameOver) return; // 게임 종료 후 타이머 업데이트 중지
-
-        timePassed += Time.deltaTime;
+        if (!isGameOver && !isGameClear)
+        {
+            timePassed += Time.deltaTime;
+        }
+        else if(!isGameOver && isGameClear)
+        {
+            GameClear();
+        }
+        else
+        {
+            return;
+        }
     }
 
     void DecreaseTime()
@@ -91,13 +102,15 @@ public class GameManager : MonoBehaviour
     {
         gameOverSprite.SetActive(isGameOver);
         retryButton.SetActive(isGameOver);
+        quitGameButton.SetActive(isGameOver);
     }
 
     void GameClear()
-    {
+    {            
         isGameClear = true;
         gameClearSprite.SetActive(isGameClear);
         nextStageButton.SetActive(isGameClear);
+        quitGameButton.SetActive(isGameClear);
     }
     public void Retry()
     {
@@ -111,5 +124,13 @@ public class GameManager : MonoBehaviour
         ScoreManager.currentStage++;
         penalty = 0;
         SceneManager.LoadScene("Stage1");
+    }
+    public void QuitGame()
+    {
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #else
+                Application.Quit(); // 어플리케이션 종료
+        #endif    
     }
 }
