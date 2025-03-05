@@ -1,33 +1,37 @@
 using UnityEngine;
 
+
+//입력이나 다른 이벤트를 처리한다.
+//현재 게임 오브젝트에 다른 컴포넌트에 명령을 내린다.
+//사용자 컴포넌트는 한가지 일만 해야 된다.
 public class PlayerController : MonoBehaviour
 {
-    float moveSpeed = 3.0f;
-    float rollSpeed = 60.0f;
-    float pitchSpeed = 60.0f;
-    float yawSpeed = 60.0f;
+    MeshRenderer meshRenderer;
 
+    float moveSpeed = 3.0f;
+    float rotationSpeed = 60.0f;
+
+
+    void Awake()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
+
+
+    // Update is called once per frame
     void Update()
     {
-        float pitch = Input.GetAxisRaw("Vertical");
-        float roll = Input.GetAxisRaw("Horizontal");
-        float yaw = 0;
+        //velocity => vector 크기랑 방향
+        //s = v * t => speed * direction * time 
 
-        if (Input.GetKey(KeyCode.E))
-        {
-            yaw++;
-        }
-        if (Input.GetKey(KeyCode.Q))
-        {
-            yaw--;
-        }
+        float v = Input.GetAxisRaw("Vertical");
+        float h = Input.GetAxisRaw("Horizontal");
 
-        // 전진 이동
-        transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed);
 
-        // 올바른 회전 방식 적용
-        transform.Rotate(Vector3.right * pitch * Time.deltaTime * pitchSpeed, Space.Self); // Pitch
-        transform.Rotate(Vector3.up * yaw * Time.deltaTime * yawSpeed, Space.Self);       // Yaw
-        transform.Rotate(Vector3.forward * -roll * Time.deltaTime * rollSpeed, Space.Self); // Roll
+        //로컬좌표계, 월드 좌표계
+        //세상의 위방향
+        //transform.position += transform.up * v * Time.deltaTime * moveSpeed;
+        transform.Translate(Vector3.forward * -v * Time.deltaTime * moveSpeed);
+        transform.Rotate(transform.up * -h * Time.deltaTime * rotationSpeed);
     }
 }
