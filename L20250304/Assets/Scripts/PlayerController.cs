@@ -1,21 +1,38 @@
-using Unity.Mathematics;
 using UnityEngine;
 
+
+//입력이나 다른 이벤트를 처리한다.
+//현재 게임 오브젝트에 다른 컴포넌트에 명령을 내린다.
+//사용자 컴포넌트는 한가지 일만 해야 된다.
 public class PlayerController : MonoBehaviour
 {
-    float h = 0;
-    void Start()
+    MeshRenderer meshRenderer;
+
+    float moveSpeed = 3.0f;
+    float rotationSpeed = 60.0f;
+    float h;
+
+    void Awake()
     {
-       
+        meshRenderer = GetComponent<MeshRenderer>();
     }
 
+
+    // Update is called once per frame
     void Update()
     {
-        h += Input.GetAxis("Horizontal")*Time.deltaTime;
-        float v = Input.GetAxis("Vertical");
+        //velocity => vector 크기랑 방향
+        //s = v * t => speed * direction * time 
 
-        transform.rotation = quaternion.Euler(0,0,-h);
-        transform.position += new Vector3(0, v, 0)*Time.deltaTime;
+        float v = Input.GetAxisRaw("Vertical");
+        h += Input.GetAxisRaw("Horizontal") * rotationSpeed * Time.deltaTime;
 
+
+        //로컬좌표계, 월드 좌표계
+        //세상의 위방향
+        //transform.position += transform.up * v * Time.deltaTime * moveSpeed;
+        transform.rotation = Quaternion.Euler(0, 0, -h);
+        transform.Translate(Vector3.up * v * Time.deltaTime * moveSpeed);
+        //transform.eulerAngles += transform.forward * -h * Time.deltaTime * rotationSpeed;
     }
 }
