@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -19,7 +20,7 @@ public class PlayerManager : MonoBehaviour
     private float targetDistance;
     private float targetFOV;
     private bool isZoomed = false;    //확대 여부
-    private Coroutine zoomCoroutine;    //코루틴을 사용하여 확대/축소 처리
+    private Coroutine zoomCoroutine;    //코루틴을 사용하여 줌 확대/축소 처리
     private Camera mainCamera;
 
     private float pitch = 0.0f;     //상하 회전값(x, y, z를 쓰면 헷갈릴 수 있다)
@@ -32,6 +33,13 @@ public class PlayerManager : MonoBehaviour
     public float jumpHeight = 2.0f;
     private Vector3 velocity;
     private bool isGround;
+
+    private Animator animator;
+    private float horizontal;
+    private float vertical;
+    private bool isRunning = false;
+    private float waklSpeed = 5.0f;
+    private float runSpeed = 10.0f;
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -40,6 +48,7 @@ public class PlayerManager : MonoBehaviour
         targetFOV = defaultFOV;
         mainCamera = cameraTransform.GetComponent<Camera>();
         mainCamera.fieldOfView = defaultFOV;
+        animator = GetComponent<Animator>();
 
     }
 
@@ -72,6 +81,7 @@ public class PlayerManager : MonoBehaviour
             Debug.Log(isCameraRotationSeperated ? "카메라가 플레이어와 별도로 회전합니다" : "카메라를 따라 플레이어가 회전합니다");
         }
 
+        //움직임
         if (isFirstPerson)
         {
             FirstPersonMovement();
@@ -80,13 +90,66 @@ public class PlayerManager : MonoBehaviour
         {
             ThirdPersonMovement();
         }
+
+        //줌 인
+        if (Input.GetMouseButtonDown(1))    //우클릭을 눌러 줌 다운 
+        {
+            if(zoomCoroutine != null)       //줌이 되어 있다면 입력 시 줌을 끝낸다
+            {
+                StopCoroutine(zoomCoroutine);
+            }
+            if (isFirstPerson)              //1인칭 줌(시야각 좁히기)
+            {
+                SetTargetFOV(zoomFov);
+                zoomCoroutine = StartCoroutine(ZoomFieldOfView(targetFOV));
+            }
+            else                            //3인칭 줌(카메라 당기기)
+            {
+                SetTargetDistance(zoomDistance);
+                zoomCoroutine = StartCoroutine(ZoomCamera(targetDistance));
+            }
+        }
+
+        if (Input.GetMouseButtonUp(1))      //우클릭을 해제해 줌 해제
+        {
+            if (zoomCoroutine != null)      
+            {
+                StopCoroutine(zoomCoroutine);
+            }
+            if (isFirstPerson)              
+            {
+                SetTargetFOV(defaultFOV);
+                zoomCoroutine = StartCoroutine(ZoomFieldOfView(defaultFOV));
+            }
+            else                            
+            {
+                SetTargetDistance(thirdPersonDistance);
+                zoomCoroutine = StartCoroutine(ZoomCamera(thirdPersonDistance));
+            }
+        }
+
+        //이동 애니메이션 제어
+        animator.SetFloat("Horizontal", horizontal);
+        animator.SetFloat("Vertical", vertical);
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isRunning = true;
+        }
+        else
+        {
+            isRunning = false;
+        }
+        animator.SetBool("isRunning", isRunning);
+        moveSpeed = isRunning ? runSpeed : waklSpeed;
+
     }
 
     //1인칭 시점에서의 움직임 -> 캐릭터 움직임과 카메라가 직접 맞물림(isCameraRotationSeperated가 개입하지 않음)
     void FirstPersonMovement()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
 
         Vector3 moveDirection = cameraTransform.forward * vertical + cameraTransform.right * horizontal;
         moveDirection.y = 0;
@@ -101,8 +164,8 @@ public class PlayerManager : MonoBehaviour
     //3인칭 시점에서의 움직임 -> 캐릭터가 먼저 움직이고 카메라가 뒤쫓아감(딜레이 필요)
     void ThirdPersonMovement()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
         characterController.Move(move * moveSpeed * Time.deltaTime);
@@ -133,5 +196,37 @@ public class PlayerManager : MonoBehaviour
                 + Quaternion.Euler(pitch, yaw, 0) * direction;
             cameraTransform.LookAt(playerLookObj.position + new Vector3(0, thirdPersonOffset.y, 0));
         }
+    }
+
+    public void SetTargetDistance(float distance)
+    {
+        targetDistance = distance;
+    }
+
+    public void SetTargetFOV(float FOV)
+    {
+        targetFOV = FOV;
+    }
+
+
+    //3인칭/1인칭 줌 기능
+    //함수에 비해 실행과 복귀가 편리
+    IEnumerator ZoomCamera(float targetDistance)    //3인칭 줌(카메라 움직이기)
+    {
+        while (Mathf.Abs(currentDistance - targetDistance) > 0.01f)  //현재 거리 -> 목표 거리로 부드럽게 이동
+        {
+            currentDistance = Mathf.Lerp(currentDistance, targetDistance, zoomSpeed * Time.deltaTime);
+            yield return null;
+        }
+        currentDistance = targetDistance;       //목표 거리에 도달한 후 값을 고정
+    }
+    IEnumerator ZoomFieldOfView(float targetFOV)    //1인칭 줌(시야각 좁히기)
+    {
+        while (Mathf.Abs(mainCamera.fieldOfView - targetFOV) > 0.01f)
+        {
+            mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
+            yield return null;
+        }
+        mainCamera.fieldOfView = targetFOV;     //목표 시야각에 도달한 후 값을 고정
     }
 }
