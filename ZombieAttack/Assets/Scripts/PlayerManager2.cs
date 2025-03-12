@@ -20,7 +20,7 @@ public class PlayerManager2 : MonoBehaviour
     private float currentDistance; //현재 카메라와의 거리(3인칭 모드)
     private float targetDistance; //목표 카메라 거리
     private float targetFov; //목표 FOV
-    private bool isZoomed = false; //확대 여부 확인
+    //private bool isZoomed = false; //확대 여부 확인
     private Coroutine zoomCoroutine; //코루틴을 사용하여 확대 축소 처리
     private Camera mainCamera; //카메라 컴포넌트
 
