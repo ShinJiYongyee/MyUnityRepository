@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class PlayerManager : MonoBehaviour
     private float vertical;
     private bool isRunning = false;
     private bool isAim = false;
-    //private bool isFireing = false;
+    private bool isFireing = false;
     private float waklSpeed = 5.0f;
     private float runSpeed = 10.0f;
 
@@ -52,13 +53,34 @@ public class PlayerManager : MonoBehaviour
     public Transform aimTarget;
 
     private float weaponMaxDistance = 100.0f;
-    private float weaponDamage = 30.0f;
+    //private float weaponDamage = 30.0f;
 
     private int animationspeed = 1;
 
+    public MultiAimConstraint multiAimConstraint;
+    public LayerMask TargetLayerMask;
+
+    //아이템 줍기 애니메이션 변수
     private bool isGettingItem = false; // 아이템 줍기 중인지 여부
     private bool isHoldingRifle = false;
 
+    //아이템 줍기 동작 변수
+    public Vector3 boxSize = new Vector3(1.0f, 1.0f, 1.0f);
+    public float castDistance = 5.0f;
+    public LayerMask itemLayer;
+    public Transform itemGetPos;
+
+    //UI 아이콘 제어 변수
+    public GameObject crosshairObj;
+    public GameObject weaponIconObj;
+    public bool hasM4Item;
+
+    //총구 화염 구현 변수
+    public ParticleSystem M4Effect;
+
+    //사격 간 딜레이
+    private float rifleFireDelay = 3.0f;
+    
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -71,8 +93,9 @@ public class PlayerManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         RifleM4.SetActive(false);
-
-
+        crosshairObj.SetActive(false);
+        weaponIconObj.SetActive(false);
+        hasM4Item = false;
 
     }
 
@@ -250,62 +273,68 @@ public class PlayerManager : MonoBehaviour
     }
     void Aim()
     {
-        if (RifleM4.gameObject.activeSelf)
+        if (!isCameraRotationSeperated)
         {
-
-            //줌 인
-            if (Input.GetMouseButtonDown(1))    //우클릭을 눌러 줌 다운 
+            if (RifleM4.gameObject.activeSelf)
             {
-                isAim = true;
-                //animator.SetBool("isAim", isAim);
-                animator.SetLayerWeight(1, 1);
-                if (zoomCoroutine != null)       //줌이 되어 있다면 입력 시 줌을 끝낸다
-                {
-                    StopCoroutine(zoomCoroutine);
-                }
-                if (isFirstPerson)              //1인칭 줌(시야각 좁히기)
-                {
-                    //("RMB pressed");
 
-                    SetTargetFOV(zoomFOV);
-                    zoomCoroutine = StartCoroutine(ZoomFieldOfView(targetFOV));
-                }
-                else                            //3인칭 줌(카메라 당기기)
+                //줌 인
+                if (Input.GetMouseButtonDown(1))    //우클릭을 눌러 줌 다운 
                 {
-                    //("RMB pressed");
+                    isAim = true;
+                    crosshairObj.SetActive(true);
+                    //조준 시 자동으로 조준 지점 이동
+                    multiAimConstraint.data.offset = new Vector3(-30, 0, 0);
+                    //animator.SetBool("isAim", isAim);
+                    animator.SetLayerWeight(1, 1);
+                    if (zoomCoroutine != null)       //줌이 되어 있다면 입력 시 줌을 끝낸다
+                    {
+                        StopCoroutine(zoomCoroutine);
+                    }
+                    if (isFirstPerson)              //1인칭 줌(시야각 좁히기)
+                    {
+                        //("RMB pressed");
 
-                    SetTargetDistance(zoomDistance);
-                    zoomCoroutine = StartCoroutine(ZoomCamera(targetDistance));
+                        SetTargetFOV(zoomFOV);
+                        zoomCoroutine = StartCoroutine(ZoomFieldOfView(targetFOV));
+                    }
+                    else                            //3인칭 줌(카메라 당기기)
+                    {
+                        //("RMB pressed");
 
+                        SetTargetDistance(zoomDistance);
+                        zoomCoroutine = StartCoroutine(ZoomCamera(targetDistance));
+
+                    }
                 }
-            }
-            //줌 아웃
-            if (Input.GetMouseButtonUp(1))      //우클릭을 해제해 줌 해제
-            {
-                isAim = false;
-                //animator.SetBool("isAim", isAim);
-                animator.SetLayerWeight(1, 0);
-                if (zoomCoroutine != null)
+                //줌 아웃
+                if (Input.GetMouseButtonUp(1))      //우클릭을 해제해 줌 해제
                 {
-                    StopCoroutine(zoomCoroutine);
-                }
-                if (isFirstPerson)
-                {
-                    //("RMB released");
+                    isAim = false;
+                    crosshairObj.SetActive(false);
+                    //animator.SetBool("isAim", isAim);
+                    animator.SetLayerWeight(1, 0);
+                    if (zoomCoroutine != null)
+                    {
+                        StopCoroutine(zoomCoroutine);
+                    }
+                    if (isFirstPerson)
+                    {
+                        //("RMB released");
 
-                    SetTargetFOV(defaultFOV);
-                    zoomCoroutine = StartCoroutine(ZoomFieldOfView(targetFOV));    //defaultFOV -> targetFOV
-                }
-                else
-                {
-                    //("RMB released");
+                        SetTargetFOV(defaultFOV);
+                        zoomCoroutine = StartCoroutine(ZoomFieldOfView(targetFOV));    //defaultFOV -> targetFOV
+                    }
+                    else
+                    {
+                        //("RMB released");
 
-                    SetTargetDistance(thirdPersonDistance);
-                    zoomCoroutine = StartCoroutine(ZoomCamera(targetDistance)); //thirdPersonDistance -> targetDistance
+                        SetTargetDistance(thirdPersonDistance);
+                        zoomCoroutine = StartCoroutine(ZoomCamera(targetDistance)); //thirdPersonDistance -> targetDistance
+                    }
                 }
             }
         }
-
     }
     void Fire()
     {
@@ -313,46 +342,45 @@ public class PlayerManager : MonoBehaviour
         //조준 사격
         if (Input.GetMouseButtonDown(0))
         {
-            if (isAim)
+            if (isAim && !isFireing)
             {
                 //("fire");
 
                 //사격 애니메이션 재생 및 사격음 출력
-                //isFireing = true;
+                weaponMaxDistance = 1000.0f;
+                isFireing = true;
                 animator.SetTrigger("Fire");
                 audioSource.PlayOneShot(audioClipFire);
-
-                weaponMaxDistance = 1000.0f;
-                weaponDamage = 40.0f;
+                M4Effect.Play();
                 
+                //fire delay data fix
+                StartCoroutine(FireDelay(rifleFireDelay));
 
                 //사격 시 가상의 광선을 발사
                 Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, weaponMaxDistance))
+                RaycastHit[] hits = Physics.RaycastAll(ray, weaponMaxDistance, TargetLayerMask);
+                if (hits.Length > 0)
                 {
-                    //명중 시 적색 광선을 출력, 2초간 탄도 묘사
-                    //("Hit : " + hit.collider.gameObject.name);
-                    Debug.DrawLine(ray.origin, hit.point, Color.red, 2.0f);
-
-                    // 맞은 오브젝트가 Zombie라면 HP 감소
-                    ZombieManager zombie = hit.collider.GetComponent<ZombieManager>();
-                    if (zombie != null)
+                    for (int i = 0; i < hits.Length && i < 2; i++)
                     {
-                        zombie.TakeDamage(weaponDamage); // 데미지 부여
+                        Debug.Log("충돌 : " + hits[i].collider.gameObject.name);
+                        Debug.DrawLine(ray.origin, hits[i].point, Color.red, 2.0f);
                     }
                 }
                 else
                 {
-                    //명중 시 녹색 광선을 출력, 2초간 탄도 묘사
                     Debug.DrawLine(ray.origin, ray.origin + ray.direction * weaponMaxDistance, Color.green, 2.0f);
                 }
+
             }
         }
-        //if (Input.GetMouseButtonUp(0))
-        //{
-        //    //isFireing = false;
-        //}
+
+    }
+    IEnumerator FireDelay(float fireDelay)
+    {
+
+        yield return new WaitForSeconds(fireDelay);
+        isFireing = false;
     }
 
     void Run()
@@ -370,20 +398,22 @@ public class PlayerManager : MonoBehaviour
 
     void SelectWeapon()
     {
-        //무기 선택
-        //총 꺼내기/넣기 토글
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (hasM4Item)
         {
-            isHoldingRifle = !isHoldingRifle;
-            RifleM4.SetActive(isHoldingRifle);
-            //꺼낼 때 애니메이션 재생
-            if (isHoldingRifle)
+            //무기 선택
+            //총 꺼내기/넣기 토글
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                animator.SetTrigger("isWeaponChange");
-
+                isHoldingRifle = !isHoldingRifle;
+                RifleM4.SetActive(isHoldingRifle);
+                //꺼낼 때 애니메이션 재생
+                if (isHoldingRifle)
+                {
+                    animator.SetTrigger("isWeaponChange");
+                    //animator.SetTrigger("RiflePullOut");
+                }
             }
         }
-
     }
 
     void SetMovingAnimation()
@@ -426,15 +456,33 @@ public class PlayerManager : MonoBehaviour
     {
         yield return null; // 한 프레임 대기 (애니메이션 상태 갱신 기다림)
 
+        //아이템 줍기 애니메이션 재생
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0); // 기본 레이어
         float animationLength = stateInfo.length;
         //($"[아이템 줍기] 감지된 애니메이션 길이: {animationLength}");
 
-        yield return new WaitForSeconds(animationLength); // 애니메이션 길이만큼 대기
+        //아이템 줍기 동작
+        Vector3 origin = itemGetPos.position;
+        Vector3 direction = itemGetPos.forward;
+        RaycastHit[] hits;
+        hits = Physics.BoxCastAll(origin, boxSize / 2, direction, Quaternion.identity, castDistance, itemLayer);
+        foreach (RaycastHit hit in hits)
+        {
+            hit.collider.gameObject.SetActive(false);
+            Debug.Log("itme : " + hit.collider.gameObject.name);
+            audioSource.PlayOneShot(audioClipEquip);
+            hasM4Item = true;
+            weaponIconObj.SetActive(true);
+        }
 
-        isGettingItem = false;
+        // 애니메이션 길이만큼 대기
+        yield return new WaitForSeconds(animationLength);
+
         //("[아이템 줍기] 완료, 다시 이동 가능");
+        isGettingItem = false;
         animator.Play("Movement");
         RifleM4.SetActive(isHoldingRifle);
     }
+    
+
 }
