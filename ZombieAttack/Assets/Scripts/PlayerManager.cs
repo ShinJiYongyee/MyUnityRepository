@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -27,7 +28,7 @@ public class PlayerManager : MonoBehaviour
     private float pitch = 0.0f;     //상하 회전값(x, y, z를 쓰면 헷갈릴 수 있다)
     private float yaw = 0.0f;
     private bool isFirstPerson = false;
-    private bool isCameraRotationSeperated = true;  //카메라 회전이 플레이어 회전과 독립적인지(1인칭 시점에서 비활성화)
+    private bool isCameraRotationSeperated = false;  //카메라 회전이 플레이어 회전과 독립적인지(1인칭 시점에서 비활성화)
 
     //중력 관련 변수
     public float gravity = -9.81f;  //플레이어가 점프 후 떨어질 때 작용하는 중력
@@ -79,8 +80,13 @@ public class PlayerManager : MonoBehaviour
     public ParticleSystem M4Effect;
 
     //사격 간 딜레이
-    private float rifleFireDelay = 3.0f;
-    
+    private float rifleFireDelay = 1.0f;
+
+    bool isPlayingAnimation = false; // 애니메이션 진행 중 여부
+
+    private float muzzleFlashDuration = 0.1f; //총구 화염 수명
+
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -277,7 +283,6 @@ public class PlayerManager : MonoBehaviour
         {
             if (RifleM4.gameObject.activeSelf)
             {
-
                 //줌 인
                 if (Input.GetMouseButtonDown(1))    //우클릭을 눌러 줌 다운 
                 {
@@ -333,6 +338,7 @@ public class PlayerManager : MonoBehaviour
                         zoomCoroutine = StartCoroutine(ZoomCamera(targetDistance)); //thirdPersonDistance -> targetDistance
                     }
                 }
+                
             }
         }
     }
@@ -352,7 +358,9 @@ public class PlayerManager : MonoBehaviour
                 animator.SetTrigger("Fire");
                 audioSource.PlayOneShot(audioClipFire);
                 M4Effect.Play();
-                
+                StartCoroutine(StopMuzzleFlash(muzzleFlashDuration)); //총구 화염 끄기
+
+
                 //fire delay data fix
                 StartCoroutine(FireDelay(rifleFireDelay));
 
@@ -382,6 +390,12 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitForSeconds(fireDelay);
         isFireing = false;
     }
+    // 총구 화염 끄는 코루틴 추가
+    IEnumerator StopMuzzleFlash(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        M4Effect.Stop();
+    }
 
     void Run()
     {
@@ -406,14 +420,34 @@ public class PlayerManager : MonoBehaviour
             {
                 isHoldingRifle = !isHoldingRifle;
                 RifleM4.SetActive(isHoldingRifle);
+
                 //꺼낼 때 애니메이션 재생
-                if (isHoldingRifle)
+                if (isHoldingRifle && !isPlayingAnimation)
                 {
-                    animator.SetTrigger("isWeaponChange");
+                    isPlayingAnimation = true;
                     //animator.SetTrigger("RiflePullOut");
+                    StartCoroutine(HandleSelectWeapon());
                 }
             }
         }
+
+    }
+    IEnumerator HandleSelectWeapon()
+    {
+        animator.SetLayerWeight(1, 1);
+        animator.SetTrigger("isWeaponChange");
+        AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo(1);
+        while (!animatorStateInfo.IsName("isWeaponChange"))
+        {
+
+            yield return null; // 다음 프레임까지 대기
+            animatorStateInfo = animator.GetCurrentAnimatorStateInfo(1); // 상태 갱신
+        }
+        float animationLength = animatorStateInfo.length;
+
+        yield return new WaitForSeconds(animationLength);
+        isPlayingAnimation = false;
+        //animator.SetLayerWeight(1, 0);  //구동되지 않음
     }
 
     void SetMovingAnimation()
@@ -446,7 +480,6 @@ public class PlayerManager : MonoBehaviour
             isGettingItem = true; // 줍기 상태로 변경
             RifleM4.SetActive(false);
             animator.Play("PickUp", 0, 0f); // 0번 레이어에서 PickUp 애니메이션 재생
-
             // 코루틴으로 애니메이션 길이 감지 및 후처리
             StartCoroutine(HandleItemPickup());
         }
@@ -454,6 +487,7 @@ public class PlayerManager : MonoBehaviour
 
     IEnumerator HandleItemPickup()
     {
+
         yield return null; // 한 프레임 대기 (애니메이션 상태 갱신 기다림)
 
         //아이템 줍기 애니메이션 재생
@@ -473,6 +507,8 @@ public class PlayerManager : MonoBehaviour
             audioSource.PlayOneShot(audioClipEquip);
             hasM4Item = true;
             weaponIconObj.SetActive(true);
+
+
         }
 
         // 애니메이션 길이만큼 대기
@@ -483,6 +519,6 @@ public class PlayerManager : MonoBehaviour
         animator.Play("Movement");
         RifleM4.SetActive(isHoldingRifle);
     }
-    
+
 
 }
