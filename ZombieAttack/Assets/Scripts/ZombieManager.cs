@@ -25,7 +25,7 @@ public class ZombieManager : MonoBehaviour
     private void Start()
     {
         animator = GetComponent<Animator>();
-        currentState= EZombieState.ZombieIdle;
+        currentState = EZombieState.ZombieIdle;
 
     }
 
@@ -38,18 +38,18 @@ public class ZombieManager : MonoBehaviour
 
     void ChangeCurrentIEnumeratorState()
     {
-        if (distanceToTarget < attackRange)  
-        {
-            if (currentState != EZombieState.Attack)
-            {
-                ChanageState(EZombieState.Attack);
-            }
-        }
-        else if (distanceToTarget < trackingRange && distanceToTarget > attackRange)
+        if (distanceToTarget < trackingRange && distanceToTarget > attackRange)
         {
             if (currentState != EZombieState.Chase)
             {
                 ChanageState(EZombieState.Chase);
+            }
+        }
+        else if (distanceToTarget < attackRange)
+        {
+            if (currentState != EZombieState.Attack)
+            {
+                ChanageState(EZombieState.Attack);
             }
         }
         else
@@ -186,30 +186,50 @@ public class ZombieManager : MonoBehaviour
 
     private IEnumerator Attack()
     {
-        if(isAttacking) yield break;
+        Debug.Log(gameObject.name + " : 공격 시작");
+        float animationLength = attackDelay;
 
-        isAttacking = true;
+        while (currentState == EZombieState.Attack)
+        {
+            distanceToTarget = Vector3.Distance(transform.position, target.position);
 
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        float animationLength = stateInfo.length;
+            if (distanceToTarget > attackRange) // 공격 범위 벗어나면 추적 상태로
+            {
+                ChanageState(EZombieState.Chase);
+            }
 
-        animator.SetTrigger("Attack");
-        Debug.Log(gameObject.name + " : 공격중");
-        transform.LookAt(target.position);
+            if (!isAttacking)
+            {
+                isAttacking = true;
+                Debug.Log("isAttacking : " + isAttacking);
+                animator.SetTrigger("Attack");
+                Debug.Log(gameObject.name + " : 공격중");
+                transform.LookAt(target.position); // 타겟 바라보기
 
-        yield return new WaitForSeconds(animationLength);
+                //AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                //animationLength = stateInfo.length;
 
-        isAttacking = false;
+            }
+            yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
+            isAttacking = false;
+            Debug.Log("isAttacking : " + isAttacking);
+
+            //yield return null; // 다음 프레임까지 대기
+        }
 
 
-        //float distance = Vector3.Distance(transform.position, target.position);
-        //if (distance > attackRange && distance < trackingRange)
+        //distanceToTarget = Vector3.Distance(transform.position, target.position);
+        //if (distanceToTarget > attackRange && distanceToTarget < trackingRange)
         //{
         //    ChanageState(EZombieState.Chase);
         //}
-        //else if (distance < attackRange)
+        //else if (distanceToTarget < attackRange)
         //{
         //    ChanageState(EZombieState.Attack);
+        //}
+        //else
+        //{
+        //    ChanageState(EZombieState.Patrol);
         //}
 
     }
