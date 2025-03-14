@@ -42,35 +42,26 @@ public class ZombieManager : MonoBehaviour
 
         //표적과의 거리 탐지
         distanceToTarget = Vector3.Distance(transform.position, target.position);
-        //("distance to target : " + distanceToTarget);
+        Debug.Log("distance to target : " + distanceToTarget);
 
-        if (distanceToTarget < trackingRange)       //추적
-        {
-            Vector3 direction = (target.position - transform.position).normalized;
-            transform.position = transform.position + direction * moveSpeed * Time.deltaTime;
-            transform.forward = (target.position - transform.position).normalized;
-            //("추적");
-        }
-        else if (distanceToTarget < attackRange)    //공격
-        {
-            //("공격");
-        }
-        else                                        //순찰
-        {
-            if (patrolPoints.Length > 0) 
-            {
-                //("순찰중");
-                Transform targetPoint = patrolPoints[currentPoint];
-                Vector3 direction = (targetPoint.position - transform.position).normalized;
-                transform.position += direction * moveSpeed * Time.deltaTime;
-                transform.LookAt(targetPoint.position);
+        ChangeCurrentState();
 
-                if (Vector3.Distance(transform.position, targetPoint.position) < 0.3f)
-                {
-                    currentPoint = (currentPoint + 1) % patrolPoints.Length;
-                }
-            }
+        switch (currentState)
+        {
+            case EZombieState.Idle:
+                Idle(); break;
+            case EZombieState.Attack:
+                Attack(); break;
+            case EZombieState.Evade:
+                Evade(); break;
+            case EZombieState.Patrol:
+                Patrol(); break;
+            case EZombieState.Chase:
+                Chase(target); break;
+            case EZombieState.Die:
+                break;
         }
+
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -107,10 +98,6 @@ public class ZombieManager : MonoBehaviour
         }
 
     }
-    void ResetLayerWeight()
-    {
-        playerAnimator.SetLayerWeight(1, 0);
-    }
     void CheckAlive()
     {
         if (zombieHP == 0)
@@ -125,7 +112,65 @@ public class ZombieManager : MonoBehaviour
         if (zombieHP < 0) zombieHP = 0; // HP가 음수가 되지 않도록 제한
         //("remain HP : " + zombieHP);
     }
+    void ChangeCurrentState()
+    {
+        if (distanceToTarget < trackingRange && distanceToTarget > attackRange)       //추적
+        {
+            currentState = EZombieState.Chase;
+        }
+        else if (distanceToTarget < attackRange)    //공격
+        {
+            currentState = EZombieState.Attack;
+        }
+        else                                        //순찰
+        {
+            if (patrolPoints.Length > 0)
+            {
+                currentState = EZombieState.Patrol;
+            }
+            else
+            {
+                currentState = EZombieState.Idle;
+            }
+        }
 
+    }
+    void Patrol()
+    {
+        if (patrolPoints.Length > 0)
+        {
+            Debug.Log("순찰중");
+            Transform targetPoint = patrolPoints[currentPoint];
+            Vector3 direction = (targetPoint.position - transform.position).normalized;
+            transform.position += direction * moveSpeed * Time.deltaTime;
+            transform.LookAt(targetPoint.position);
+
+            if (Vector3.Distance(transform.position, targetPoint.position) < 0.3f)
+            {
+                currentPoint = (currentPoint + 1) % patrolPoints.Length;
+            }
+        }
+    }
+    void Chase(Transform target)
+    {
+        if (distanceToTarget < trackingRange)       //추적
+        {
+            Debug.Log("추적");
+            Vector3 direction = (target.position - transform.position).normalized;
+            transform.position = transform.position + direction * moveSpeed * Time.deltaTime;
+            transform.forward = (target.position - transform.position).normalized;
+        }
+    }
+    void Evade()
+    {
+        Debug.Log("도주");
+    }
+    void Idle()
+    {
+        Debug.Log("대기");
+    }
+    void Attack()
+    {
+        Debug.Log("공격");
+    }
 }
-
-
