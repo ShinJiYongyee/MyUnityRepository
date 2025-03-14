@@ -475,50 +475,56 @@ public class PlayerManager : MonoBehaviour
     void GetItem()
     {
         isHoldingRifle = RifleM4.activeSelf;
+
         if (Input.GetKeyDown(KeyCode.E) && !isGettingItem) // E를 처음 눌렀을 때만
         {
-            isGettingItem = true; // 줍기 상태로 변경
-            RifleM4.SetActive(false);
-            animator.Play("PickUp", 0, 0f); // 0번 레이어에서 PickUp 애니메이션 재생
-            // 코루틴으로 애니메이션 길이 감지 및 후처리
-            StartCoroutine(HandleItemPickup());
+            Vector3 origin = itemGetPos.position;
+            Vector3 direction = itemGetPos.forward;
+            RaycastHit[] hits = Physics.BoxCastAll(origin, boxSize / 2, direction, Quaternion.identity, castDistance, itemLayer);
+
+            if (hits.Length > 0) // 주울 아이템이 있다면
+            {
+                isGettingItem = true; // 줍기 상태로 변경
+                RifleM4.SetActive(false); // 무기 비활성화
+                animator.Play("PickUp", 0, 0f); // 애니메이션 재생
+                StartCoroutine(HandleItemPickup(hits)); // 감지된 아이템 전달
+            }
+            else
+            {
+                Debug.Log("주울 수 있는 아이템이 없습니다."); // 아이템 없을 때
+            }
         }
     }
 
-    IEnumerator HandleItemPickup()
+
+    IEnumerator HandleItemPickup(RaycastHit[] hits)
     {
+        yield return null; // 한 프레임 대기 (애니메이션 준비)
 
-        yield return null; // 한 프레임 대기 (애니메이션 상태 갱신 기다림)
-
-        //아이템 줍기 애니메이션 재생
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0); // 기본 레이어
+        // 애니메이션 길이 가져오기
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         float animationLength = stateInfo.length;
-        //($"[아이템 줍기] 감지된 애니메이션 길이: {animationLength}");
+        Debug.Log($"[아이템 줍기] 애니메이션 길이: {animationLength}");
 
-        //아이템 줍기 동작
-        Vector3 origin = itemGetPos.position;
-        Vector3 direction = itemGetPos.forward;
-        RaycastHit[] hits;
-        hits = Physics.BoxCastAll(origin, boxSize / 2, direction, Quaternion.identity, castDistance, itemLayer);
+        // 아이템 처리
         foreach (RaycastHit hit in hits)
         {
-            hit.collider.gameObject.SetActive(false);
-            Debug.Log("itme : " + hit.collider.gameObject.name);
+            hit.collider.gameObject.SetActive(false); // 아이템 비활성화
+            Debug.Log("아이템 획득: " + hit.collider.gameObject.name);
             audioSource.PlayOneShot(audioClipEquip);
             hasM4Item = true;
             weaponIconObj.SetActive(true);
-
-
         }
 
-        // 애니메이션 길이만큼 대기
+        // 애니메이션 완료까지 대기
         yield return new WaitForSeconds(animationLength);
 
-        //("[아이템 줍기] 완료, 다시 이동 가능");
-        isGettingItem = false;
-        animator.Play("Movement");
-        RifleM4.SetActive(isHoldingRifle);
+        Debug.Log("[아이템 줍기] 완료");
+        isGettingItem = false; // 줍기 완료
+        animator.Play("Movement"); // 기본 동작 복귀
+        RifleM4.SetActive(isHoldingRifle); // 이전 무기 상태 복구
     }
+
 
 
 }
