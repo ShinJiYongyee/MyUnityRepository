@@ -1,176 +1,271 @@
+using System.Collections;
 using UnityEngine;
 
 public class ZombieManager : MonoBehaviour
 {
-    PlayerManager playerManager;
-    Animator playerAnimator;
-
-    public enum EZombieState
-    {
-        Patrol,
-        Chase,
-        Attack,
-        Evade,
-        Damage,
-        Idle,
-        Die
-    }
-
-    public EZombieState currentState = EZombieState.Idle;   //좀비 상태 열거형 저장(기본: 대기)
+    public EZombieState currentState;
     public Transform target;
-    public float attackRange = 1.0f;        //공격 범위
-    public float attackDelay = 2.0f;        //공격 딜레이
-    private float nextAttackTime = 0.0f;    //다음 공격 시간
-    public Transform[] patrolPoints;        //순찰 지점
-    public float moveSpeed = 2.0f;          //이동 속도
-    private int currentPoint = 0;           //현재 순찰 지점
-    private float trackingRange = 3.0f;     //추적 범위
-    private bool isAttack = false;          //공격 중인지 여부
-    private float evadeRange = 5.0f;        //회피 거리
-    private float zombieHP = 10.0f;
-    private float distanceToTarget;         //표적과의 거리
-    private bool isWaiting = false;         //상태 전환 후 대기 여부
-    private float idleTime = 2.0f;          //상태 전환 후 대기 시간
+    public float attackRange = 1.0f; //공격범위
+    public float attackDelay = 2.0f; //공격딜레이
+    private float nextAttackTime = 0.0f; //다음 공격 시간관리
+    public Transform[] patrolPoints; //순찰 경로 지점들
+    private int currentPoint = 0; //현재 순찰 경로 지점 인덱스
+    public float moveSpeed = 2.0f;
+    private float trackingRange = 3.0f; //추적 범위 설정
+    private bool isAttacking = false; //공격 상태
+    private float evadeRange = 5.0f; //도망 상태 회피 거리
+    private float zombieHp = 10.0f;
+    private float distanceToTarget; //Target과의 거리 계산 값
+    private bool isWaiting = false; //상태 전환 후 대기 상태 여부
+    public float ZombieIdleTime = 2.0f; //각 상태 전환 후 대기 시간
+    private Coroutine stateRoutine;
+
+    Animator animator;
 
     private void Start()
     {
+        animator = GetComponent<Animator>();
+        currentState= EZombieState.ZombieIdle;
 
     }
-    private void Update()
-    {
-        CheckAlive();
 
-        //표적과의 거리 탐지
+    void Update()
+    {
         distanceToTarget = Vector3.Distance(transform.position, target.position);
-        Debug.Log("distance to target : " + distanceToTarget);
-
-        ChangeCurrentState();
-
-        switch (currentState)
-        {
-            case EZombieState.Idle:
-                Idle(); break;
-            case EZombieState.Attack:
-                Attack(); break;
-            case EZombieState.Evade:
-                Evade(); break;
-            case EZombieState.Patrol:
-                Patrol(); break;
-            case EZombieState.Chase:
-                Chase(target); break;
-            case EZombieState.Die:
-                break;
-        }
-
+        ChangeCurrentIEnumeratorState();
+        //ChanageState(currentState);
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        //(collision.gameObject.name);
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        playerManager = other.GetComponent<PlayerManager>();
-        playerAnimator = other.GetComponent<Animator>();
-        //플레이어 충돌시 사운드 재생
-        if (playerManager != null)
-        {
-            playerManager.audioSource.PlayOneShot(playerManager.audioClipFire);
-        }
-        //플레이어 충돌시 피격 애니메이션 재생(레이어 우선순위 조절)
-        if (playerAnimator != null)
-        {
-            playerAnimator.SetLayerWeight(1, 1);
-            playerAnimator.SetTrigger("GettingHit");
-            Invoke("ResetLayerWeight", 2.0f);
-        }
 
-        //플레이어 충돌시 특정 좌표로 이동
-        if (other.gameObject.tag == "Player")
+    void ChangeCurrentIEnumeratorState()
+    {
+        if (distanceToTarget < attackRange)  
         {
-            //player위치를 다루는 함수 비활성화
-            playerManager.characterController.enabled = false;
-            other.gameObject.transform.position = new Vector3(0, 0, 0);
-            playerManager.characterController.enabled = true;
+            if (currentState != EZombieState.Attack)
+            {
+                ChanageState(EZombieState.Attack);
+            }
+        }
+        else if (distanceToTarget < trackingRange && distanceToTarget > attackRange)
+        {
+            if (currentState != EZombieState.Chase)
+            {
+                ChanageState(EZombieState.Chase);
+            }
         }
         else
         {
-            other.GetComponent<MeshRenderer>().material.color = Color.red;
+            if (patrolPoints.Length > 0 && currentState != EZombieState.Patrol)
+            {
+                ChanageState(EZombieState.Patrol);
+            }
+            else if (patrolPoints.Length == 0 && currentState != EZombieState.ZombieIdle)
+            {
+                ChanageState(EZombieState.ZombieIdle);
+            }
+        }
+    }
+
+    public void ChanageState(EZombieState newState)
+    {
+
+        if (stateRoutine != null)
+        {
+            StopCoroutine(stateRoutine);
         }
 
-    }
-    void CheckAlive()
-    {
-        if (zombieHP == 0)
+        currentState = newState;
+
+        switch (currentState)
         {
-            //("target destroyed");
-            Destroy(gameObject);
+            case EZombieState.ZombieIdle:
+                stateRoutine = StartCoroutine(ZombieIdle());
+                break;
+            case EZombieState.Patrol:
+                stateRoutine = StartCoroutine(Patrol());
+                break;
+            case EZombieState.Chase:
+                stateRoutine = StartCoroutine(Chase());
+                break;
+            case EZombieState.Attack:
+                stateRoutine = StartCoroutine(Attack());
+                break;
+            //case EZombieState.Evade:
+            //    stateRoutine = StartCoroutine(Evade());
+            //    break;
+            case EZombieState.Die:
+                stateRoutine = StartCoroutine(Die());
+                break;
         }
     }
-    public void TakeDamage(float damage)
+
+    private IEnumerator ZombieIdle()
     {
-        zombieHP -= damage;
-        if (zombieHP < 0) zombieHP = 0; // HP가 음수가 되지 않도록 제한
-        //("remain HP : " + zombieHP);
+        Debug.Log(gameObject.name + " : 대기중");
+        animator.Play("ZombieIdle");
+
+        //while (currentState == EZombieState.ZombieIdle)
+        //{
+        //    float distance = Vector3.Distance(transform.position, target.position);
+
+        //    if (distance < trackingRange && distance > attackRange)
+        //    {
+        //        ChanageState(EZombieState.Chase);
+        //    }
+        //    else if (distance < attackRange)
+        //    {
+        //        ChanageState(EZombieState.Attack);
+        //    }
+
+        //    yield return null;
+        //}
+        yield return null;
     }
-    void ChangeCurrentState()
+
+
+    private IEnumerator Patrol()
     {
-        if (distanceToTarget < trackingRange && distanceToTarget > attackRange)       //추적
-        {
-            currentState = EZombieState.Chase;
-        }
-        else if (distanceToTarget < attackRange)    //공격
-        {
-            currentState = EZombieState.Attack;
-        }
-        else                                        //순찰
+        Debug.Log(gameObject.name + " : 순찰중");
+
+        while (currentState == EZombieState.Patrol)
         {
             if (patrolPoints.Length > 0)
             {
-                currentState = EZombieState.Patrol;
-            }
-            else
-            {
-                currentState = EZombieState.Idle;
-            }
-        }
+                animator.SetBool("IsWalking", true);
+                Transform targetPoint = patrolPoints[currentPoint];
+                Vector3 direction = (targetPoint.position - transform.position).normalized;
+                transform.position += direction * moveSpeed * Time.deltaTime;
+                transform.LookAt(targetPoint.transform);
 
-    }
-    void Patrol()
-    {
-        if (patrolPoints.Length > 0)
-        {
-            Debug.Log("순찰중");
-            Transform targetPoint = patrolPoints[currentPoint];
-            Vector3 direction = (targetPoint.position - transform.position).normalized;
-            transform.position += direction * moveSpeed * Time.deltaTime;
-            transform.LookAt(targetPoint.position);
+                if (Vector3.Distance(transform.position, targetPoint.position) < 0.3f)
+                {
+                    currentPoint = (currentPoint + 1) % patrolPoints.Length;
+                }
 
-            if (Vector3.Distance(transform.position, targetPoint.position) < 0.3f)
-            {
-                currentPoint = (currentPoint + 1) % patrolPoints.Length;
+                //float distance = Vector3.Distance(transform.position, target.position);
+                //if (distance < trackingRange && distance > attackRange)
+                //{
+                //    ChanageState(EZombieState.Chase);
+                //}
+                //else if (distance < attackRange)
+                //{
+                //    ChanageState(EZombieState.Attack);
+                //}
             }
+            yield return null;
         }
+        yield return null;
     }
-    void Chase(Transform target)
+
+
+    private IEnumerator Chase()
     {
-        if (distanceToTarget < trackingRange)       //추적
+        Debug.Log(gameObject.name + " 추적중");
+
+        while (currentState == EZombieState.Chase)
         {
-            Debug.Log("추적");
+            float distance = Vector3.Distance(transform.position, target.position);
+
             Vector3 direction = (target.position - transform.position).normalized;
-            transform.position = transform.position + direction * moveSpeed * Time.deltaTime;
-            transform.forward = (target.position - transform.position).normalized;
+            transform.position += direction * moveSpeed * Time.deltaTime;
+            transform.LookAt(target.position);
+            animator.SetBool("IsWalking", true);
+
+            //if (distance < attackRange)
+            //{
+            //    ChanageState(EZombieState.Attack);
+            //}
+            //else if (distance < evadeRange)
+            //{
+            //    ChanageState(EZombieState.Patrol);
+            //}
+
+            yield return null;
         }
+        yield return null;
     }
-    void Evade()
+
+    private IEnumerator Attack()
     {
-        Debug.Log("도주");
+        if(isAttacking) yield break;
+
+        isAttacking = true;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        float animationLength = stateInfo.length;
+
+        animator.SetTrigger("Attack");
+        Debug.Log(gameObject.name + " : 공격중");
+        transform.LookAt(target.position);
+
+        yield return new WaitForSeconds(animationLength);
+
+        isAttacking = false;
+
+
+        //float distance = Vector3.Distance(transform.position, target.position);
+        //if (distance > attackRange && distance < trackingRange)
+        //{
+        //    ChanageState(EZombieState.Chase);
+        //}
+        //else if (distance < attackRange)
+        //{
+        //    ChanageState(EZombieState.Attack);
+        //}
+
     }
-    void Idle()
+
+    //private IEnumerator Evade()
+    //{
+    //    Debug.Log(gameObject.name + " : 도망중");
+    //    animator.SetBool("IsWalking", true);
+    //    Vector3 evadeDirection = (transform.position - target.position).normalized;
+    //    float evadeTime = 3.0f;
+    //    float timer = 0.0f;
+
+    //    Quaternion targetRotation = Quaternion.LookRotation(evadeDirection);
+    //    transform.rotation = targetRotation;
+
+    //    while (currentState == EZombieState.Evade && timer < evadeTime)
+    //    {
+    //        transform.position += evadeDirection * moveSpeed * Time.deltaTime;
+    //        timer += Time.deltaTime;
+    //        yield return null;
+    //    }
+
+    //    ChanageState(EZombieState.ZombieIdle);
+    //}
+    public IEnumerator TakeDamage(float damage)
     {
-        Debug.Log("대기");
+        Debug.Log(gameObject.name + $" {damage} 데미지 받음");
+        animator.SetTrigger("Damage");
+        zombieHp -= damage;
+        if (zombieHp <= 0)
+        {
+            ChanageState(EZombieState.Die);
+        }
+        else
+        {
+            ChanageState(EZombieState.Chase);
+        }
+        yield return null;
     }
-    void Attack()
+    private IEnumerator Die()
     {
-        Debug.Log("공격");
+        Debug.Log(gameObject.name + " 사망");
+        animator.SetTrigger("Die");
+        yield return new WaitForSeconds(2.0f);
+        gameObject.SetActive(false);
     }
+}
+
+public enum EZombieState
+{
+    Patrol,
+    Chase,
+    Attack,
+    ZombieIdle,
+    Evade,
+    TakeDamage,
+    Die,
+
 }
