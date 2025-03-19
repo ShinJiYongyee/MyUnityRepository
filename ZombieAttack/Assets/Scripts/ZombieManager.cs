@@ -14,7 +14,7 @@ public class ZombieManager : MonoBehaviour
     private float trackingRange = 3.0f; //추적 범위 설정
     private bool isAttacking = false; //공격 상태
     private float evadeRange = 5.0f; //도망 상태 회피 거리
-    private float zombieHp = 10.0f;
+    private float zombieHP = 100.0f;
     private float distanceToTarget; //Target과의 거리 계산 값
     private bool isWaiting = false; //상태 전환 후 대기 상태 여부
     public float ZombieIdleTime = 2.0f; //각 상태 전환 후 대기 시간
@@ -256,10 +256,10 @@ public class ZombieManager : MonoBehaviour
     //}
     public IEnumerator TakeDamage(float damage)
     {
-        Debug.Log(gameObject.name + $" {damage} 데미지 받음");
         animator.SetTrigger("Damage");
-        zombieHp -= damage;
-        if (zombieHp <= 0)
+        zombieHP -= damage;
+        Debug.Log(gameObject.name + $" {damage} 데미지 받음, HP : {zombieHP}");
+        if (zombieHP <= 0)
         {
             ChanageState(EZombieState.Die);
         }

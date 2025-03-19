@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -54,7 +56,7 @@ public class PlayerManager : MonoBehaviour
     public Transform aimTarget;
 
     private float weaponMaxDistance = 100.0f;
-    //private float weaponDamage = 30.0f;
+    private float weaponDamage = 30.0f;
 
     private int animationspeed = 1;
 
@@ -80,12 +82,25 @@ public class PlayerManager : MonoBehaviour
     public ParticleSystem M4Effect;
 
     //사격 간 딜레이
-    private float rifleFireDelay = 1.0f;
+    private float rifleFireDelay = 0.3f;
 
     bool isPlayingAnimation = false; // 애니메이션 진행 중 여부
 
     private float muzzleFlashDuration = 0.1f; //총구 화염 수명
 
+    //착탄 이펙트와 효과음
+    public ParticleSystem damageParticleSystem;
+    public AudioClip audioClipDamage;
+
+    //잔탄 표시 UI
+    public Text bulletText;
+    private int loadedBullet = 30;
+    private int totalBullet = 0;
+
+    private int magSize = 30;
+    public GameObject flashLightObj;
+    private bool isFlashLightOn = false;
+    public AudioClip flashLightSound;
 
     void Start()
     {
@@ -101,6 +116,9 @@ public class PlayerManager : MonoBehaviour
         RifleM4.SetActive(false);
         crosshairObj.SetActive(false);
         weaponIconObj.SetActive(false);
+        bulletText.gameObject.SetActive(false);
+        flashLightObj.SetActive(false);
+
         hasM4Item = false;
 
     }
@@ -119,13 +137,52 @@ public class PlayerManager : MonoBehaviour
             Fire();
             Run();
             GetItem();
+            Reload();
         }
+        ActionFlashLight();
         SelectWeapon();
         SetMovingAnimation();
 
         animator.speed = animationspeed;    //애니메이션 재생 속도 설정 및 저장
 
+        bulletText.text = $"{loadedBullet}/{totalBullet}";
 
+    }
+
+    void ActionFlashLight()
+    {
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            isFlashLightOn = !isFlashLightOn;
+            flashLightObj.SetActive(isFlashLightOn);
+            audioSource.PlayOneShot(flashLightSound);
+        }
+    }
+    void Reload()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            int loadingBullet = 0;
+            if (totalBullet != 0 && loadedBullet < magSize)
+            {
+                if(totalBullet >= magSize)
+                {
+                    totalBullet -= magSize;
+                    loadingBullet += magSize;
+                    loadedBullet += loadingBullet;
+                }
+                else
+                {
+                    loadingBullet += totalBullet;
+                    totalBullet = 0;
+                    loadedBullet += loadingBullet;
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
     }
 
     //1인칭 시점에서의 움직임 -> 캐릭터 움직임과 카메라가 직접 맞물림(isCameraRotationSeperated가 개입하지 않음)
@@ -338,7 +395,7 @@ public class PlayerManager : MonoBehaviour
                         zoomCoroutine = StartCoroutine(ZoomCamera(targetDistance)); //thirdPersonDistance -> targetDistance
                     }
                 }
-                
+
             }
         }
     }
@@ -351,6 +408,20 @@ public class PlayerManager : MonoBehaviour
             if (isAim && !isFireing)
             {
                 //("fire");
+
+                if (loadedBullet > 0)
+                {
+                    loadedBullet--;
+                    bulletText.text = $"{loadedBullet}/{totalBullet}";
+                    bulletText.gameObject.SetActive(true);
+
+                }
+                else
+                {
+                    //재장전?
+                    //잔탄 고갈 효과음
+                    return;
+                }
 
                 //사격 애니메이션 재생 및 사격음 출력
                 weaponMaxDistance = 1000.0f;
@@ -372,6 +443,13 @@ public class PlayerManager : MonoBehaviour
                     for (int i = 0; i < hits.Length && i < 2; i++)
                     {
                         Debug.Log("충돌 : " + hits[i].collider.gameObject.name);
+
+                        ParticleSystem particle = Instantiate(damageParticleSystem, hits[i].point, Quaternion.identity);
+                        damageParticleSystem.transform.position = hits[i].point;
+                        damageParticleSystem.Play();
+                        audioSource.PlayOneShot(audioClipDamage);
+                        hits[i].collider.GetComponent<ZombieManager>().TakeDamage(weaponDamage);
+
                         Debug.DrawLine(ray.origin, hits[i].point, Color.red, 2.0f);
                     }
                 }
@@ -420,6 +498,7 @@ public class PlayerManager : MonoBehaviour
             {
                 isHoldingRifle = !isHoldingRifle;
                 RifleM4.SetActive(isHoldingRifle);
+                bulletText.gameObject.SetActive(isHoldingRifle);
 
                 //꺼낼 때 애니메이션 재생
                 if (isHoldingRifle && !isPlayingAnimation)
@@ -484,10 +563,19 @@ public class PlayerManager : MonoBehaviour
 
             if (hits.Length > 0) // 주울 아이템이 있다면
             {
-                isGettingItem = true; // 줍기 상태로 변경
-                RifleM4.SetActive(false); // 무기 비활성화
-                animator.Play("PickUp", 0, 0f); // 애니메이션 재생
-                StartCoroutine(HandleItemPickup(hits)); // 감지된 아이템 전달
+                if(totalBullet < 120)
+                {
+                    isGettingItem = true; // 줍기 상태로 변경
+                    RifleM4.SetActive(false); // 무기 비활성화
+                    animator.Play("PickUp", 0, 0f); // 애니메이션 재생
+                    StartCoroutine(HandleItemPickup(hits)); // 감지된 아이템 전달
+                    //bulletText.gameObject.SetActive(true);
+                    totalBullet += 30;
+                }
+                else
+                {
+                    Debug.Log("탄을 더 이상 획득할 수 없습니다");
+                }
             }
             else
             {
@@ -504,7 +592,7 @@ public class PlayerManager : MonoBehaviour
         // 애니메이션 길이 가져오기
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         float animationLength = stateInfo.length;
-        Debug.Log($"[아이템 줍기] 애니메이션 길이: {animationLength}");
+        //Debug.Log($"[아이템 줍기] 애니메이션 길이: {animationLength}");
 
         // 아이템 처리
         foreach (RaycastHit hit in hits)
@@ -519,7 +607,7 @@ public class PlayerManager : MonoBehaviour
         // 애니메이션 완료까지 대기
         yield return new WaitForSeconds(animationLength);
 
-        Debug.Log("[아이템 줍기] 완료");
+        //Debug.Log("[아이템 줍기] 완료");
         isGettingItem = false; // 줍기 완료
         animator.Play("Movement"); // 기본 동작 복귀
         RifleM4.SetActive(isHoldingRifle); // 이전 무기 상태 복구
