@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.UI;
 
@@ -96,8 +97,8 @@ public class PlayerManager : MonoBehaviour
     public Text bulletText;
     private int loadedBullet = 30;
     private int totalBullet = 0;
-
     private int magSize = 30;
+
     public GameObject flashLightObj;
     private bool isFlashLightOn = false;
     public AudioClip flashLightSound;
@@ -160,30 +161,34 @@ public class PlayerManager : MonoBehaviour
     }
     void Reload()
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            int loadingBullet = 0;
-            if (totalBullet != 0 && loadedBullet < magSize)
+            // 현재 장탄이 magSize 미만이어야만 장전 가능
+            if (loadedBullet < magSize && totalBullet > 0)
             {
-                if(totalBullet >= magSize)
+                int loadingBullet = 0;
+                int neededBullet = magSize - loadedBullet; // 필요한 총알 수
+
+                if (totalBullet >= neededBullet)
                 {
-                    totalBullet -= magSize;
-                    loadingBullet += magSize;
-                    loadedBullet += loadingBullet;
+                    totalBullet -= neededBullet;
+                    loadedBullet += neededBullet;
                 }
                 else
                 {
-                    loadingBullet += totalBullet;
+                    loadedBullet += totalBullet;
                     totalBullet = 0;
-                    loadedBullet += loadingBullet;
                 }
+
+                Debug.Log($"Reloaded! Loaded: {loadedBullet}, Remaining: {totalBullet}");
             }
             else
             {
-                return;
+                Debug.Log("Cannot reload: Magazine full or no bullets left.");
             }
         }
     }
+
 
     //1인칭 시점에서의 움직임 -> 캐릭터 움직임과 카메라가 직접 맞물림(isCameraRotationSeperated가 개입하지 않음)
     void FirstPersonMovement()

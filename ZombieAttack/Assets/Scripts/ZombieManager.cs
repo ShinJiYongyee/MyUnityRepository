@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.InputSystem.Android;
 
 public class ZombieManager : MonoBehaviour
 {
@@ -22,11 +24,14 @@ public class ZombieManager : MonoBehaviour
 
     Animator animator;
 
+    private NavMeshAgent agent;
+
+
     private void Start()
     {
         animator = GetComponent<Animator>();
         currentState = EZombieState.ZombieIdle;
-
+        agent = GetComponent<NavMeshAgent>();
     }
 
     void Update()
@@ -131,12 +136,22 @@ public class ZombieManager : MonoBehaviour
             if (patrolPoints.Length > 0)
             {
                 animator.SetBool("IsWalking", true);
-                Transform targetPoint = patrolPoints[currentPoint];
-                Vector3 direction = (targetPoint.position - transform.position).normalized;
-                transform.position += direction * moveSpeed * Time.deltaTime;
-                transform.LookAt(targetPoint.transform);
 
-                if (Vector3.Distance(transform.position, targetPoint.position) < 0.3f)
+                //이동 알고리즘
+                //Transform targetPoint = patrolPoints[currentPoint];
+                //Vector3 direction = (targetPoint.position - transform.position).normalized;
+                //transform.position += direction * moveSpeed * Time.deltaTime;
+                //transform.LookAt(targetPoint.transform);
+                //if (Vector3.Distance(transform.position, targetPoint.position) < 0.3f)
+                //{
+                //    currentPoint = (currentPoint + 1) % patrolPoints.Length;
+                //}
+
+                //NavmeshAgent를 활용한 이동 알고리즘
+                agent.speed = moveSpeed;    //ai의 속력 설정
+                agent.isStopped = false;    //ai의 정지 여부 설정
+                agent.destination = patrolPoints[currentPoint].position;  //ai의 목적지를 설정
+                if (Vector3.Distance(transform.position, agent.destination) < 0.5f)
                 {
                     currentPoint = (currentPoint + 1) % patrolPoints.Length;
                 }
@@ -155,20 +170,25 @@ public class ZombieManager : MonoBehaviour
         }
         yield return null;
     }
-
-
     private IEnumerator Chase()
     {
         Debug.Log(gameObject.name + " 추적중");
 
         while (currentState == EZombieState.Chase)
         {
-            float distance = Vector3.Distance(transform.position, target.position);
-
-            Vector3 direction = (target.position - transform.position).normalized;
-            transform.position += direction * moveSpeed * Time.deltaTime;
-            transform.LookAt(target.position);
             animator.SetBool("IsWalking", true);
+
+            //이동 알고리즘
+            //float distance = Vector3.Distance(transform.position, target.position);
+            //Vector3 direction = (target.position - transform.position).normalized;
+            //transform.position += direction * moveSpeed * Time.deltaTime;
+            //transform.LookAt(target.position);
+
+            //NavmeshAgent를 활용한 이동 알고리즘
+            agent.speed = moveSpeed;    //ai의 속력 설정
+            agent.isStopped = false;    //ai의 정지 여부 설정
+            agent.destination = target.position;  //ai의 목적지를 설정
+
 
             //if (distance < attackRange)
             //{
@@ -196,19 +216,30 @@ public class ZombieManager : MonoBehaviour
             if (distanceToTarget > attackRange) // 공격 범위 벗어나면 추적 상태로
             {
                 ChanageState(EZombieState.Chase);
+                yield break;
             }
 
             if (!isAttacking)
             {
+
                 isAttacking = true;
                 Debug.Log("isAttacking : " + isAttacking);
                 animator.SetTrigger("Attack");
                 Debug.Log(gameObject.name + " : 공격중");
-                transform.LookAt(target.position); // 타겟 바라보기
+
+                //타겟 바라보기
+                //transform.LookAt(target.position);
+
+                //ai 제어로 타겟 바라보기
+                agent.isStopped = true;
+                agent.destination = target.position;
 
                 //AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
                 //animationLength = stateInfo.length;
+                //yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
 
+                isAttacking = false; // 공격 상태 해제
+                agent.isStopped = false;
             }
             yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
             isAttacking = false;
