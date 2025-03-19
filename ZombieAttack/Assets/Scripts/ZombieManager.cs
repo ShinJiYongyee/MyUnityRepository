@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem.Android;
 
 public class ZombieManager : MonoBehaviour
@@ -27,6 +28,11 @@ public class ZombieManager : MonoBehaviour
     private NavMeshAgent agent;
 
     private bool isAlive = true;
+
+    public AudioSource audioSource;
+    public AudioClip audioClipDamage;
+
+    public GameObject hand;
 
     private void Start()
     {
@@ -243,9 +249,9 @@ public class ZombieManager : MonoBehaviour
                 agent.isStopped = true;
                 agent.destination = target.position;
 
-                //AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-                //animationLength = stateInfo.length;
-                //yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
+                audioSource.PlayOneShot(audioClipDamage);
+
+
             }
             yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
             isAttacking = false;
@@ -326,6 +332,7 @@ public class ZombieManager : MonoBehaviour
         Debug.Log("시체 제거");
         gameObject.SetActive(false);
     }
+
 
 }
 

@@ -103,6 +103,8 @@ public class PlayerManager : MonoBehaviour
     private bool isFlashLightOn = false;
     public AudioClip flashLightSound;
 
+    public float playerHP = 100.0f;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
