@@ -453,7 +453,14 @@ public class PlayerManager : MonoBehaviour
                         damageParticleSystem.transform.position = hits[i].point;
                         damageParticleSystem.Play();
                         audioSource.PlayOneShot(audioClipDamage);
-                        hits[i].collider.GetComponent<ZombieManager>().TakeDamage(weaponDamage);
+
+                        // 맞은 오브젝트가 Zombie라면 HP 감소
+                        ZombieManager zombie = hits[i].collider.GetComponent<ZombieManager>();
+                        if (zombie != null)
+                        {
+                           zombie.StartCoroutine("TakeDamage", weaponDamage);
+
+                        }
 
                         Debug.DrawLine(ray.origin, hits[i].point, Color.red, 2.0f);
                     }

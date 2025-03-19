@@ -16,7 +16,7 @@ public class ZombieManager : MonoBehaviour
     private float trackingRange = 3.0f; //추적 범위 설정
     private bool isAttacking = false; //공격 상태
     private float evadeRange = 5.0f; //도망 상태 회피 거리
-    private float zombieHP = 100.0f;
+    public float zombieHP = 100.0f;
     private float distanceToTarget; //Target과의 거리 계산 값
     private bool isWaiting = false; //상태 전환 후 대기 상태 여부
     public float ZombieIdleTime = 2.0f; //각 상태 전환 후 대기 시간
@@ -26,6 +26,7 @@ public class ZombieManager : MonoBehaviour
 
     private NavMeshAgent agent;
 
+    private bool isAlive = true;
 
     private void Start()
     {
@@ -38,35 +39,43 @@ public class ZombieManager : MonoBehaviour
     {
         distanceToTarget = Vector3.Distance(transform.position, target.position);
         ChangeCurrentIEnumeratorState();
-        //ChanageState(currentState);
     }
 
     void ChangeCurrentIEnumeratorState()
     {
-        if (distanceToTarget < trackingRange && distanceToTarget > attackRange)
+        if (isAlive)
         {
-            if (currentState != EZombieState.Chase)
+            if (distanceToTarget < trackingRange && distanceToTarget > attackRange)
             {
-                ChanageState(EZombieState.Chase);
+                if (currentState != EZombieState.Chase)
+                {
+                    ChanageState(EZombieState.Chase);
+                }
             }
-        }
-        else if (distanceToTarget < attackRange)
-        {
-            if (currentState != EZombieState.Attack)
+            else if (distanceToTarget < attackRange)
             {
-                ChanageState(EZombieState.Attack);
+                if (currentState != EZombieState.Attack)
+                {
+                    ChanageState(EZombieState.Attack);
+                }
             }
+            else
+            {
+                if (patrolPoints.Length > 0 && currentState != EZombieState.Patrol)
+                {
+                    ChanageState(EZombieState.Patrol);
+                }
+                else if (patrolPoints.Length == 0 && currentState != EZombieState.ZombieIdle)
+                {
+                    ChanageState(EZombieState.ZombieIdle);
+                }
+            }
+
         }
         else
         {
-            if (patrolPoints.Length > 0 && currentState != EZombieState.Patrol)
-            {
-                ChanageState(EZombieState.Patrol);
-            }
-            else if (patrolPoints.Length == 0 && currentState != EZombieState.ZombieIdle)
-            {
-                ChanageState(EZombieState.ZombieIdle);
-            }
+            ChanageState(EZombieState.Die);
+            Invoke("RemoveCorpse", 8.0f); //별도의 float변수를 할당할 경우 상정한 것보다 빠른 시간 내 발동된다
         }
     }
 
@@ -237,13 +246,11 @@ public class ZombieManager : MonoBehaviour
                 //AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
                 //animationLength = stateInfo.length;
                 //yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
-
-                isAttacking = false; // 공격 상태 해제
-                agent.isStopped = false;
             }
             yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
             isAttacking = false;
             Debug.Log("isAttacking : " + isAttacking);
+            agent.isStopped = false;
 
             //yield return null; // 다음 프레임까지 대기
         }
@@ -287,11 +294,12 @@ public class ZombieManager : MonoBehaviour
     //}
     public IEnumerator TakeDamage(float damage)
     {
-        animator.SetTrigger("Damage");
+        //animator.SetTrigger("Damage");
         zombieHP -= damage;
         Debug.Log(gameObject.name + $" {damage} 데미지 받음, HP : {zombieHP}");
         if (zombieHP <= 0)
         {
+            Debug.Log(gameObject.name + " 죽음");
             ChanageState(EZombieState.Die);
         }
         else
@@ -302,11 +310,23 @@ public class ZombieManager : MonoBehaviour
     }
     private IEnumerator Die()
     {
-        Debug.Log(gameObject.name + " 사망");
+        if (!isAlive)
+        {
+            yield break;
+        }
+        Debug.Log(gameObject.name + " 사망 처리");
         animator.SetTrigger("Die");
-        yield return new WaitForSeconds(2.0f);
+        agent.isStopped = true;
+        isAlive = false;
+        yield return null;
+
+    }
+    private void RemoveCorpse()
+    {
+        Debug.Log("시체 제거");
         gameObject.SetActive(false);
     }
+
 }
 
 public enum EZombieState
