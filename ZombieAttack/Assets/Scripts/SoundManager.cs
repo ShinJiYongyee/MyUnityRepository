@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class SoundManager : MonoBehaviour
 {
@@ -41,6 +43,21 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        //맨 첫번 Scene 검사
+        string activeSceneName = SceneManager.GetActiveScene().name;
+        if(activeSceneName == "Menu")
+        {
+            PlayBGM("MenuBGM", 1.0f);
+        }
+        else if(activeSceneName == "Stage1")
+        {
+            PlayBGM("Stage1BGM", 1.0f);
+        }
+
+    }
+
     void InitializeAudioClips()
     {
         foreach (var BGM in BGMClipList)
@@ -59,12 +76,22 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlayBGM(string name)
+    public void PlayBGM(string name, float fadeDuration = 1.0f)
     {
         if (BGMClips.ContainsKey(name))
         {
-            BGMSource.clip = BGMClips[name];
-            BGMSource.Play();
+            if(currentBGMCoroutine != null)
+            {
+                StopCoroutine(currentBGMCoroutine); //BGM이 이미 켜져 있다면 끄기
+            }
+
+            currentBGMCoroutine = StartCoroutine(FadeOutBGM(fadeDuration, () =>
+            {
+                BGMSource.spatialBlend = 0f; //거리에 따른 음향 효과 제거
+                BGMSource.clip = BGMClips[name];
+                BGMSource.Play();
+                currentBGMCoroutine = StartCoroutine(FadeInBGM(fadeDuration));
+            })); //람다식을 이용한 BGM 재생
         }
     }
 
@@ -75,7 +102,13 @@ public class SoundManager : MonoBehaviour
             SFXSource.PlayOneShot(SFXClips[name]);
         }
     }
-
+    public void PlaySFX(string name, Vector3 position)
+    {
+        if (SFXClips.ContainsKey(name))
+        {
+            AudioSource.PlayClipAtPoint(SFXClips[name], position); //특정 위치의 오디오클립 재생
+        }
+    }
     public void StopBGM()
     {
         BGMSource.Stop();
