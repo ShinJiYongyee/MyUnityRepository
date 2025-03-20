@@ -108,7 +108,7 @@ public class PlayerManager : MonoBehaviour
     public float playerHP = 100.0f;
 
     public GameObject pauseObj;
-    private bool isPaused = false;
+    public bool isPaused = false;
 
     private void Awake()
     {
