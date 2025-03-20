@@ -105,6 +105,7 @@ public class PlayerManager : MonoBehaviour
     public AudioClip flashLightSound;
 
     public float playerHP = 100.0f;
+    public Text HPText;
 
     public GameObject pauseObj;
     public bool isPaused = false;
@@ -166,6 +167,7 @@ public class PlayerManager : MonoBehaviour
         animator.speed = animationspeed;    //애니메이션 재생 속도 설정 및 저장
 
         bulletText.text = $"{loadedBullet}/{totalBullet}";
+        HPText.text = $"{playerHP}/100";
 
         PauseGame();
 
