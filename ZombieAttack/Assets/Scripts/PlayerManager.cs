@@ -420,7 +420,7 @@ public class PlayerManager : MonoBehaviour
                     isAim = false;
                     crosshairObj.SetActive(false);
                     //animator.SetBool("isAim", isAim);
-                    animator.SetLayerWeight(1, 0);
+                    //animator.SetLayerWeight(1, 0);
                     if (zoomCoroutine != null)
                     {
                         StopCoroutine(zoomCoroutine);
@@ -562,10 +562,20 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
+        if (isHoldingRifle && !isGettingItem)
+        {
+            animator.SetLayerWeight(1, 1);
+        }
+        else
+        {
+            animator.SetLayerWeight(1, 0);
+        }
+
+
     }
     IEnumerator HandleSelectWeapon()
     {
-        animator.SetLayerWeight(1, 1);
+        //animator.SetLayerWeight(1, 1);
         animator.SetTrigger("isWeaponChange");
         AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo(1);
         while (!animatorStateInfo.IsName("isWeaponChange"))
@@ -609,6 +619,7 @@ public class PlayerManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E) && !isGettingItem) // E를 처음 눌렀을 때만
         {
+            animator.SetLayerWeight(1, 0);
             Vector3 origin = itemGetPos.position;
             Vector3 direction = itemGetPos.forward;
             RaycastHit[] hits = Physics.BoxCastAll(origin, boxSize / 2, direction, Quaternion.identity, castDistance, itemLayer);
@@ -633,6 +644,7 @@ public class PlayerManager : MonoBehaviour
             {
                 Debug.Log("주울 수 있는 아이템이 없습니다."); // 아이템 없을 때
             }
+
         }
     }
 

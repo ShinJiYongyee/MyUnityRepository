@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +24,8 @@ public class SoundManager : MonoBehaviour
 
     public NamedAudioClip[] BGMClipList;
     public NamedAudioClip[] SFXClipList;
+
+    private Coroutine currentBGMCoroutine; //현재 BGM 재생 여부 판단
 
     private void Awake()
     {
@@ -89,5 +92,32 @@ public class SoundManager : MonoBehaviour
     public void SetSFXVolume(float volume)
     {
         SFXSource.volume = Mathf.Clamp(volume, 0, 1);
+    }
+
+    private IEnumerator FadeOutBGM(float duration, Action onFadeComplete)
+    {
+        float startVolume = BGMSource.volume;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            BGMSource.volume = Mathf.Lerp(startVolume, 0f, t / duration);
+            yield return null;
+        }
+        BGMSource.volume = 0;
+        onFadeComplete?.Invoke();   //페이드 아웃 완료시 다음 작업 실행
+    }
+
+    private IEnumerator FadeInBGM(float duration)
+    {
+        float startVolume = 0f;
+        BGMSource.volume = 0f;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            BGMSource.volume = Mathf.Lerp(startVolume, 1f, t / duration);
+            yield return null;
+        }
+        BGMSource.volume = 1.0f;
+
     }
 }
