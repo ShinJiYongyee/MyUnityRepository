@@ -1,8 +1,8 @@
 using System.Collections;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Audio;
-using UnityEngine.InputSystem.Android;
+
 
 public class ZombieManager : MonoBehaviour
 {
@@ -34,15 +34,30 @@ public class ZombieManager : MonoBehaviour
 
     public GameObject hand;
 
+    private bool isJumping = false;
+    private Rigidbody rb;
+    public float jumpHeight = 2.0f;
+    public float jumpDuration = 1.0f;
+    private NavMeshLink[] navMeshLinks;
+
+    [System.Obsolete]
     private void Start()
     {
         animator = GetComponent<Animator>();
         currentState = EZombieState.ZombieIdle;
         agent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+        rb.isKinematic = true;
+        navMeshLinks = FindObjectsOfType<NavMeshLink>();
     }
 
     void Update()
     {
+        
         distanceToTarget = Vector3.Distance(transform.position, target.position);
         ChangeCurrentIEnumeratorState();
     }
@@ -87,6 +102,7 @@ public class ZombieManager : MonoBehaviour
 
     public void ChanageState(EZombieState newState)
     {
+        if(isJumping) return;
 
         if (stateRoutine != null)
         {
@@ -109,9 +125,6 @@ public class ZombieManager : MonoBehaviour
             case EZombieState.Attack:
                 stateRoutine = StartCoroutine(Attack());
                 break;
-            //case EZombieState.Evade:
-            //    stateRoutine = StartCoroutine(Evade());
-            //    break;
             case EZombieState.Die:
                 stateRoutine = StartCoroutine(Die());
                 break;
@@ -152,34 +165,20 @@ public class ZombieManager : MonoBehaviour
             {
                 animator.SetBool("IsWalking", true);
 
-                //이동 알고리즘
-                //Transform targetPoint = patrolPoints[currentPoint];
-                //Vector3 direction = (targetPoint.position - transform.position).normalized;
-                //transform.position += direction * moveSpeed * Time.deltaTime;
-                //transform.LookAt(targetPoint.transform);
-                //if (Vector3.Distance(transform.position, targetPoint.position) < 0.3f)
-                //{
-                //    currentPoint = (currentPoint + 1) % patrolPoints.Length;
-                //}
-
                 //NavmeshAgent를 활용한 이동 알고리즘
                 agent.speed = moveSpeed;    //ai의 속력 설정
                 agent.isStopped = false;    //ai의 정지 여부 설정
                 agent.destination = patrolPoints[currentPoint].position;  //ai의 목적지를 설정
+
+                if (agent.isOnOffMeshLink)
+                {
+                    StartCoroutine(JumpAcrossLink());
+                }
                 if (Vector3.Distance(transform.position, agent.destination) < 0.5f)
                 {
                     currentPoint = (currentPoint + 1) % patrolPoints.Length;
                 }
 
-                //float distance = Vector3.Distance(transform.position, target.position);
-                //if (distance < trackingRange && distance > attackRange)
-                //{
-                //    ChanageState(EZombieState.Chase);
-                //}
-                //else if (distance < attackRange)
-                //{
-                //    ChanageState(EZombieState.Attack);
-                //}
             }
             yield return null;
         }
@@ -193,26 +192,11 @@ public class ZombieManager : MonoBehaviour
         {
             animator.SetBool("IsWalking", true);
 
-            //이동 알고리즘
-            //float distance = Vector3.Distance(transform.position, target.position);
-            //Vector3 direction = (target.position - transform.position).normalized;
-            //transform.position += direction * moveSpeed * Time.deltaTime;
-            //transform.LookAt(target.position);
 
             //NavmeshAgent를 활용한 이동 알고리즘
             agent.speed = moveSpeed;    //ai의 속력 설정
             agent.isStopped = false;    //ai의 정지 여부 설정
             agent.destination = target.position;  //ai의 목적지를 설정
-
-
-            //if (distance < attackRange)
-            //{
-            //    ChanageState(EZombieState.Attack);
-            //}
-            //else if (distance < evadeRange)
-            //{
-            //    ChanageState(EZombieState.Patrol);
-            //}
 
             yield return null;
         }
@@ -261,43 +245,8 @@ public class ZombieManager : MonoBehaviour
             //yield return null; // 다음 프레임까지 대기
         }
 
-
-        //distanceToTarget = Vector3.Distance(transform.position, target.position);
-        //if (distanceToTarget > attackRange && distanceToTarget < trackingRange)
-        //{
-        //    ChanageState(EZombieState.Chase);
-        //}
-        //else if (distanceToTarget < attackRange)
-        //{
-        //    ChanageState(EZombieState.Attack);
-        //}
-        //else
-        //{
-        //    ChanageState(EZombieState.Patrol);
-        //}
-
     }
 
-    //private IEnumerator Evade()
-    //{
-    //    Debug.Log(gameObject.name + " : 도망중");
-    //    animator.SetBool("IsWalking", true);
-    //    Vector3 evadeDirection = (transform.position - target.position).normalized;
-    //    float evadeTime = 3.0f;
-    //    float timer = 0.0f;
-
-    //    Quaternion targetRotation = Quaternion.LookRotation(evadeDirection);
-    //    transform.rotation = targetRotation;
-
-    //    while (currentState == EZombieState.Evade && timer < evadeTime)
-    //    {
-    //        transform.position += evadeDirection * moveSpeed * Time.deltaTime;
-    //        timer += Time.deltaTime;
-    //        yield return null;
-    //    }
-
-    //    ChanageState(EZombieState.ZombieIdle);
-    //}
     public IEnumerator TakeDamage(float damage)
     {
         //animator.SetTrigger("Damage");
@@ -323,6 +272,7 @@ public class ZombieManager : MonoBehaviour
         Debug.Log(gameObject.name + " 사망 처리");
         animator.SetTrigger("Die");
         agent.isStopped = true;
+        agent.enabled = false;
         isAlive = false;
         yield return null;
 
@@ -331,6 +281,41 @@ public class ZombieManager : MonoBehaviour
     {
         Debug.Log("시체 제거");
         gameObject.SetActive(false);
+    }
+
+    private IEnumerator JumpAcrossLink()
+    {
+        Debug.Log(gameObject.name + " 좀비 점프");
+
+        isJumping = true;
+
+        agent.isStopped = true;
+
+        //NavMeshLink의 시작과 끝 좌표를 가져오기
+        OffMeshLinkData linkData = agent.currentOffMeshLinkData;
+        Vector3 startPos = linkData.startPos;
+        Vector3 endPos = linkData.endPos;
+
+        //점프 경로 계산(포물선을 그리며 점프)
+        float elapsedTime = 0;
+        while(elapsedTime < jumpDuration)
+        {
+            float t = elapsedTime/jumpDuration;
+            Vector3 currentPosition = Vector3.Lerp(startPos, endPos, t);
+            currentPosition.y += Mathf.Sin(t * Mathf.PI) * jumpHeight; //포물선 경로
+            transform.position = currentPosition;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        //도착점에 위치
+        transform.position = endPos;
+
+        //NavMeshAgent 경로 재개
+        agent.CompleteOffMeshLink();
+        agent.isStopped = false;
+        isJumping = false;
     }
 
 

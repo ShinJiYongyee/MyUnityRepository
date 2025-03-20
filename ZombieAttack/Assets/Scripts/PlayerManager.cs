@@ -105,6 +105,9 @@ public class PlayerManager : MonoBehaviour
 
     public float playerHP = 100.0f;
 
+    public GameObject pauseObj;
+    private bool isPaused = false;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -124,6 +127,7 @@ public class PlayerManager : MonoBehaviour
 
         hasM4Item = false;
 
+        pauseObj.SetActive(isPaused);
     }
 
     void Update()
@@ -150,6 +154,28 @@ public class PlayerManager : MonoBehaviour
 
         bulletText.text = $"{loadedBullet}/{totalBullet}";
 
+        PauseGame();
+
+    }
+    void PauseGame()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPaused = !isPaused;
+            pauseObj.SetActive(isPaused);
+        }
+        if(isPaused)
+        {
+            Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Time.timeScale = 1.0f; 
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     void ActionFlashLight()
@@ -267,7 +293,6 @@ public class PlayerManager : MonoBehaviour
     //함수에 비해 실행과 복귀가 편리
     IEnumerator ZoomCamera(float targetDistance)    //3인칭 줌(카메라 움직이기)
     {
-        //("camera zoom called, distance : " + targetDistance);
 
         while (Mathf.Abs(currentDistance - targetDistance) > 0.01f)  //현재 거리 -> 목표 거리로 부드럽게 이동
         {
@@ -279,7 +304,6 @@ public class PlayerManager : MonoBehaviour
     }
     IEnumerator ZoomFieldOfView(float targetFOV)    //1인칭 줌(시야각 좁히기)
     {
-        //("fov zoom called");
 
         while (Mathf.Abs(mainCamera.fieldOfView - targetFOV) > 0.01f)
         {
