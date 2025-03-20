@@ -10,16 +10,16 @@ public class ZombieManager : MonoBehaviour
     //public GameObject target; //전역 변수로 선언된 PlayerManager.Instance로 대체
     public float attackRange = 1.0f; //공격범위
     public float attackDelay = 2.0f; //공격딜레이
-    private float nextAttackTime = 0.0f; //다음 공격 시간관리
+    //private float nextAttackTime = 0.0f; //다음 공격 시간관리
     public Transform[] patrolPoints; //순찰 경로 지점들
     private int currentPoint = 0; //현재 순찰 경로 지점 인덱스
     public float moveSpeed = 2.0f;
     private float trackingRange = 3.0f; //추적 범위 설정
     private bool isAttacking = false; //공격 상태
-    private float evadeRange = 5.0f; //도망 상태 회피 거리
+    //private float evadeRange = 5.0f; //도망 상태 회피 거리
     public float zombieHP = 100.0f;
     private float distanceToTarget; //Target과의 거리 계산 값
-    private bool isWaiting = false; //상태 전환 후 대기 상태 여부
+    //private bool isWaiting = false; //상태 전환 후 대기 상태 여부
     public float ZombieIdleTime = 2.0f; //각 상태 전환 후 대기 시간
     private Coroutine stateRoutine;
 
@@ -198,37 +198,41 @@ public class ZombieManager : MonoBehaviour
 
     private IEnumerator Attack()
     {
-        Debug.Log(gameObject.name + " : 공격 시작");
-        float animationLength = attackDelay;
-
-        while (currentState == EZombieState.Attack)
+        if(PlayerManager.Instance.isAlive)
         {
-            distanceToTarget = Vector3.Distance(transform.position, PlayerManager.Instance.transform.position);
+            Debug.Log(gameObject.name + " : 공격 시작");
+            float animationLength = attackDelay;
 
-            if (distanceToTarget > attackRange) // 공격 범위 벗어나면 추적 상태로
+            while (currentState == EZombieState.Attack)
             {
-                ChanageState(EZombieState.Chase);
-                yield break;
+                distanceToTarget = Vector3.Distance(transform.position, PlayerManager.Instance.transform.position);
+
+                if (distanceToTarget > attackRange) // 공격 범위 벗어나면 추적 상태로
+                {
+                    ChanageState(EZombieState.Chase);
+                    yield break;
+                }
+
+                if (!isAttacking)
+                {
+
+                    isAttacking = true;
+                    animator.SetTrigger("Attack");
+                    Debug.Log(gameObject.name + " : 공격중");
+
+                    //ai 제어로 타겟 바라보기
+                    agent.isStopped = true;
+                    agent.destination = PlayerManager.Instance.transform.position;
+
+                }
+                yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
+                isAttacking = false;
+                Debug.Log("isAttacking : " + isAttacking);
+                agent.isStopped = false;
+
+                //yield return null; // 다음 프레임까지 대기
             }
 
-            if (!isAttacking)
-            {
-
-                isAttacking = true;
-                animator.SetTrigger("Attack");
-                Debug.Log(gameObject.name + " : 공격중");
-
-                //ai 제어로 타겟 바라보기
-                agent.isStopped = true;
-                agent.destination = PlayerManager.Instance.transform.position;
-
-            }
-            yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
-            isAttacking = false;
-            Debug.Log("isAttacking : " + isAttacking);
-            agent.isStopped = false;
-
-            //yield return null; // 다음 프레임까지 대기
         }
 
     }

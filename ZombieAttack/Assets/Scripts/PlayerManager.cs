@@ -106,7 +106,7 @@ public class PlayerManager : MonoBehaviour
 
     public float playerHP = 100.0f;
     public Text HPText;
-    private bool isAlive = true;
+    public bool isAlive;
 
     public GameObject pauseObj;
     public bool isPaused = false;
@@ -141,31 +141,36 @@ public class PlayerManager : MonoBehaviour
         flashLightObj.SetActive(false);
 
         hasM4Item = false;
+        isAlive = true;
 
         pauseObj.SetActive(isPaused);
     }
 
     void Update()
     {
-
-        RotateCamera();
-        StickOnGround();
-        //SwitchPerspective();
-        //SwitchCameraRotationSeperated();
-        if (!isGettingItem)
+        if(isAlive)
         {
-            SetMovement();
-            Aim();
-            Fire();
-            Run();
-            GetItem();
-            PlayReloadingAnimation();
+            RotateCamera();
+            StickOnGround();
+            //SwitchPerspective();
+            //SwitchCameraRotationSeperated();
+            if (!isGettingItem)
+            {
+                SetMovement();
+                Aim();
+                Fire();
+                Run();
+                GetItem();
+                PlayReloadingAnimation();
+            }
+            ActionFlashLight();
+            SelectWeapon();
+            SetMovingAnimation();
+
         }
-        ActionFlashLight();
-        SelectWeapon();
-        SetMovingAnimation();
+
         CheckAlive();
-        PauseGame();
+        CheckPaused();
 
         animator.speed = animationspeed;    //애니메이션 재생 속도 설정 및 저장
 
@@ -180,6 +185,8 @@ public class PlayerManager : MonoBehaviour
         {
             animator.SetLayerWeight(1, 0);
             animator.Play("Dying");
+            isAlive = false;
+            Invoke("SwitchPause", 3.0f);
 
         }
         else
@@ -187,19 +194,16 @@ public class PlayerManager : MonoBehaviour
             return;
         }
     }
-    void PauseGame()
+    void CheckPaused()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             isPaused = !isPaused;
         }
-        PauseSystem();
-    }
-    void PauseSystem()
-    {
         pauseObj.SetActive(isPaused);
         if (isPaused)
         {
+            Debug.Log("Paused");
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -210,6 +214,10 @@ public class PlayerManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+    }
+    void SwitchPause()
+    {
+        isPaused = !isPaused;
     }
 
     void ActionFlashLight()
@@ -227,7 +235,7 @@ public class PlayerManager : MonoBehaviour
         // 현재 장탄이 magSize 미만이어야만 장전 가능
         if (loadedBullet < magSize && totalBullet > 0)
         {
-            int loadingBullet = 0;
+            //int loadingBullet = 0;
             int neededBullet = magSize - loadedBullet; // 필요한 총알 수
 
             if (totalBullet >= neededBullet)
