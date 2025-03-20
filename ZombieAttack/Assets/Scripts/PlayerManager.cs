@@ -97,7 +97,7 @@ public class PlayerManager : MonoBehaviour
 
     //잔탄 표시 UI
     public Text bulletText;
-    private int loadedBullet = 30;
+    private int loadedBullet = 0;
     private int totalBullet = 0;
     private int magSize = 30;
 
@@ -158,7 +158,7 @@ public class PlayerManager : MonoBehaviour
             Fire();
             Run();
             GetItem();
-            Reload();
+            PlayReloadingAnimation();
         }
         ActionFlashLight();
         SelectWeapon();
@@ -201,33 +201,39 @@ public class PlayerManager : MonoBehaviour
             audioSource.PlayOneShot(flashLightSound);
         }
     }
-    void Reload()
+    void ActivateReloadingFunction()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+
+        // 현재 장탄이 magSize 미만이어야만 장전 가능
+        if (loadedBullet < magSize && totalBullet > 0)
         {
-            // 현재 장탄이 magSize 미만이어야만 장전 가능
-            if (loadedBullet < magSize && totalBullet > 0)
+            int loadingBullet = 0;
+            int neededBullet = magSize - loadedBullet; // 필요한 총알 수
+
+            if (totalBullet >= neededBullet)
             {
-                int loadingBullet = 0;
-                int neededBullet = magSize - loadedBullet; // 필요한 총알 수
-
-                if (totalBullet >= neededBullet)
-                {
-                    totalBullet -= neededBullet;
-                    loadedBullet += neededBullet;
-                }
-                else
-                {
-                    loadedBullet += totalBullet;
-                    totalBullet = 0;
-                }
-
-                Debug.Log($"Reloaded! Loaded: {loadedBullet}, Remaining: {totalBullet}");
+                totalBullet -= neededBullet;
+                loadedBullet += neededBullet;
             }
             else
             {
-                Debug.Log("Cannot reload: Magazine full or no bullets left.");
+                loadedBullet += totalBullet;
+                totalBullet = 0;
             }
+
+            Debug.Log($"Reloaded! Loaded: {loadedBullet}, Remaining: {totalBullet}");
+        }
+        else
+        {
+            Debug.Log("Cannot reload: Magazine full or no bullets left.");
+        }
+
+    }
+    void PlayReloadingAnimation()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            animator.SetTrigger("isReloading");
         }
     }
 
@@ -537,6 +543,7 @@ public class PlayerManager : MonoBehaviour
         else
         {
             isRunning = false;
+
         }
     }
 
