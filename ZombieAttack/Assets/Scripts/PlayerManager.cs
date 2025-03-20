@@ -15,13 +15,13 @@ public class PlayerManager : MonoBehaviour
     public Transform cameraTransform;
     public CharacterController characterController;
     public Transform playerHead;    //1인칭 시점
-    public float thirdPersonDistance = 3.0f;    //3인칭 모드 플레이어/카메라 거리
+    public float thirdPersonDistance = 1.5f;    //3인칭 모드 플레이어/카메라 거리
     public Vector3 thirdPersonOffset = new Vector3(0, 1.5f, 0);    //3인칭 모드 카메라 오프셋
     public Transform playerLookObj; //플레이어 시야 위치
     public float zoomDistance = 1.0f;  //3인칭 모드 카메라 확대시 거리
     public float zoomSpeed = 5.0f;     //3인칭 모드 카메라 확대 속도
-    public float defaultFOV = 60.0f;
-    public float zoomFOV = 30.0f;
+    public float defaultFOV = 90.0f;    //1인칭 모드 카메라 확대시 거리
+    public float zoomFOV = 30.0f;       //1인칭 모드 카메라 확대 속도
 
     private float currentDistance;
     private float targetDistance;
@@ -93,7 +93,6 @@ public class PlayerManager : MonoBehaviour
 
     //착탄 이펙트와 효과음
     public ParticleSystem damageParticleSystem;
-    //public AudioClip audioClipDamage;
 
     //잔탄 표시 UI
     public Text bulletText;
@@ -149,8 +148,8 @@ public class PlayerManager : MonoBehaviour
 
         RotateCamera();
         StickOnGround();
-        SwitchPerspective();
-        SwitchCameraRotationSeperated();
+        //SwitchPerspective();
+        //SwitchCameraRotationSeperated();
         if (!isGettingItem)
         {
             SetMovement();
