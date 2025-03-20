@@ -601,9 +601,9 @@ MonoBehaviour:
   BGMSource: {fileID: 609152764}
   SFXSource: {fileID: 609152763}
   BGMClipList:
-  - name: Menu
+  - name: MenuBGM
     clip: {fileID: 8300000, guid: 74aec4606952f4af1ba8d3c7d9581b43, type: 3}
-  - name: Stage1
+  - name: Stage1BGM
     clip: {fileID: 8300000, guid: ee403a3067a0c476dbd3e34a5f69c4a3, type: 3}
   SFXClipList:
   - name: Click

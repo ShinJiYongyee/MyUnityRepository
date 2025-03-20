@@ -93,7 +93,7 @@ public class PlayerManager : MonoBehaviour
 
     //착탄 이펙트와 효과음
     public ParticleSystem damageParticleSystem;
-    public AudioClip audioClipDamage;
+    //public AudioClip audioClipDamage;
 
     //잔탄 표시 UI
     public Text bulletText;
@@ -492,7 +492,7 @@ public class PlayerManager : MonoBehaviour
                         ParticleSystem particle = Instantiate(damageParticleSystem, hits[i].point, Quaternion.identity);
                         damageParticleSystem.transform.position = hits[i].point;
                         damageParticleSystem.Play();
-                        audioSource.PlayOneShot(audioClipDamage);
+                        //audioSource.PlayOneShot(audioClipDamage);
 
                         // 맞은 오브젝트가 Zombie라면 HP 감소
                         ZombieManager zombie = hits[i].collider.GetComponent<ZombieManager>();

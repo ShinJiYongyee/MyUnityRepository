@@ -40,6 +40,10 @@ public class ZombieManager : MonoBehaviour
     public float jumpDuration = 1.0f;
     private NavMeshLink[] navMeshLinks;
 
+    public AudioClip audioClipDamaged;
+    public AudioClip audioClipAttack;
+    public AudioClip audioClipDie;
+
     [System.Obsolete]
     private void Start()
     {
@@ -211,16 +215,12 @@ public class ZombieManager : MonoBehaviour
             {
 
                 isAttacking = true;
-                Debug.Log("isAttacking : " + isAttacking);
                 animator.SetTrigger("Attack");
                 Debug.Log(gameObject.name + " : 공격중");
 
                 //ai 제어로 타겟 바라보기
                 agent.isStopped = true;
                 agent.destination = PlayerManager.Instance.transform.position;
-
-                audioSource.PlayOneShot(audioClipDamage);
-
 
             }
             yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
@@ -233,11 +233,45 @@ public class ZombieManager : MonoBehaviour
 
     }
 
+    public void GiveDamage()
+    {
+        // 공격 사운드 재생
+        audioSource.PlayOneShot(audioClipAttack);
+
+        // hand 오브젝트 주변의 충돌 감지 (Trigger로 설정된 Collider 필요)
+        Collider[] hitColliders = Physics.OverlapSphere(hand.transform.position, 0.5f);
+
+        foreach (Collider hit in hitColliders)
+        {
+            // PlayerManager를 가진 오브젝트인지 확인
+            if (hit.gameObject.layer == LayerMask.NameToLayer("Player"))
+            {
+                PlayerManager player = hit.GetComponent<PlayerManager>();
+
+                if (player != null)
+                {
+                    float damage = 20.0f; // 공격 데미지 설정
+                    player.playerHP -= damage;
+                    Debug.Log($"플레이어가 {damage}의 피해를 입었습니다. 남은 HP: {player.playerHP}");
+
+                    // HP가 0 이하라면 사망 처리 (필요 시 추가 가능)
+                    if (player.playerHP <= 0)
+                    {
+                        Debug.Log("플레이어 사망");
+                        // 플레이어 사망 처리 함수 호출 가능 (예: player.Die();)
+                    }
+                }
+            }
+        }
+    }
+
+
     public IEnumerator TakeDamage(float damage)
     {
         //animator.SetTrigger("Damage");
         zombieHP -= damage;
         Debug.Log(gameObject.name + $" {damage} 데미지 받음, HP : {zombieHP}");
+        audioSource.PlayOneShot(audioClipDamage);
         if (zombieHP <= 0)
         {
             Debug.Log(gameObject.name + " 죽음");
@@ -256,6 +290,7 @@ public class ZombieManager : MonoBehaviour
             yield break;
         }
         Debug.Log(gameObject.name + " 사망 처리");
+        audioSource.PlayOneShot(audioClipDie);
         animator.SetTrigger("Die");
         agent.isStopped = true;
         agent.enabled = false;
