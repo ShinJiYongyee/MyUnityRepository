@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
+    public static PlayerManager Instance { get; private set; } //싱글톤 구현을 위한 데이터 영역의 static변수
+
     public float moveSpeed = 5.0f;
     public float mouseSensitivity = 100.0f;
     public Transform cameraTransform;
@@ -108,6 +110,18 @@ public class PlayerManager : MonoBehaviour
     public GameObject pauseObj;
     private bool isPaused = false;
 
+    private void Awake()
+    {
+        //싱글톤 구현
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -159,12 +173,12 @@ public class PlayerManager : MonoBehaviour
     }
     void PauseGame()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             isPaused = !isPaused;
             pauseObj.SetActive(isPaused);
         }
-        if(isPaused)
+        if (isPaused)
         {
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
@@ -172,7 +186,7 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
-            Time.timeScale = 1.0f; 
+            Time.timeScale = 1.0f;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -180,7 +194,7 @@ public class PlayerManager : MonoBehaviour
 
     void ActionFlashLight()
     {
-        if(Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             isFlashLightOn = !isFlashLightOn;
             flashLightObj.SetActive(isFlashLightOn);
@@ -484,7 +498,7 @@ public class PlayerManager : MonoBehaviour
                         ZombieManager zombie = hits[i].collider.GetComponent<ZombieManager>();
                         if (zombie != null)
                         {
-                           zombie.StartCoroutine("TakeDamage", weaponDamage);
+                            zombie.StartCoroutine("TakeDamage", weaponDamage);
 
                         }
 
@@ -601,7 +615,7 @@ public class PlayerManager : MonoBehaviour
 
             if (hits.Length > 0) // 주울 아이템이 있다면
             {
-                if(totalBullet < 120)
+                if (totalBullet < 120)
                 {
                     isGettingItem = true; // 줍기 상태로 변경
                     RifleM4.SetActive(false); // 무기 비활성화

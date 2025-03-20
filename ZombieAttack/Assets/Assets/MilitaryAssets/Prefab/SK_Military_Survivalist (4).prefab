@@ -7690,6 +7690,8 @@ MonoBehaviour:
   bulletText: {fileID: 0}
   flashLightObj: {fileID: 7360152525184753043}
   flashLightSound: {fileID: 8300000, guid: 1b735f22c197f9446bc8b541eef1eaa8, type: 3}
+  playerHP: 100
+  pauseObj: {fileID: 0}
 --- !u!95 &1729356930380212625
 Animator:
   serializedVersion: 7
@@ -18695,13 +18697,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7360152525184753043}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.52836466, y: -0.46992645, z: 0.52836466, w: 0.46992645}
+  m_LocalRotation: {x: 0.645061, y: -0.573716, z: 0.37714002, w: 0.33542758}
   m_LocalPosition: {x: -0.55603874, y: -0.31821036, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6223303290552775234}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 104.34, y: -27.359009, z: 61.893997}
 --- !u!108 &9198017915271450285
 Light:
   m_ObjectHideFlags: 0

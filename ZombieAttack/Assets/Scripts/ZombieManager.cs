@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class ZombieManager : MonoBehaviour
 {
     public EZombieState currentState;
-    public Transform target;
+    //public GameObject target; //전역 변수로 선언된 PlayerManager.Instance로 대체
     public float attackRange = 1.0f; //공격범위
     public float attackDelay = 2.0f; //공격딜레이
     private float nextAttackTime = 0.0f; //다음 공격 시간관리
@@ -57,8 +57,12 @@ public class ZombieManager : MonoBehaviour
 
     void Update()
     {
-        
-        distanceToTarget = Vector3.Distance(transform.position, target.position);
+        if (PlayerManager.Instance == null)
+        {
+            Debug.LogError("PlayerManager.Instance가 null입니다. PlayerManager가 제대로 초기화되지 않았을 가능성이 있습니다.");
+            return;
+        }
+        distanceToTarget = Vector3.Distance(transform.position, PlayerManager.Instance.transform.position);
         ChangeCurrentIEnumeratorState();
     }
 
@@ -136,21 +140,6 @@ public class ZombieManager : MonoBehaviour
         Debug.Log(gameObject.name + " : 대기중");
         animator.Play("ZombieIdle");
 
-        //while (currentState == EZombieState.ZombieIdle)
-        //{
-        //    float distance = Vector3.Distance(transform.position, target.position);
-
-        //    if (distance < trackingRange && distance > attackRange)
-        //    {
-        //        ChanageState(EZombieState.Chase);
-        //    }
-        //    else if (distance < attackRange)
-        //    {
-        //        ChanageState(EZombieState.Attack);
-        //    }
-
-        //    yield return null;
-        //}
         yield return null;
     }
 
@@ -196,7 +185,7 @@ public class ZombieManager : MonoBehaviour
             //NavmeshAgent를 활용한 이동 알고리즘
             agent.speed = moveSpeed;    //ai의 속력 설정
             agent.isStopped = false;    //ai의 정지 여부 설정
-            agent.destination = target.position;  //ai의 목적지를 설정
+            agent.destination = PlayerManager.Instance.transform.position;  //ai의 목적지를 설정
 
             yield return null;
         }
@@ -210,7 +199,7 @@ public class ZombieManager : MonoBehaviour
 
         while (currentState == EZombieState.Attack)
         {
-            distanceToTarget = Vector3.Distance(transform.position, target.position);
+            distanceToTarget = Vector3.Distance(transform.position, PlayerManager.Instance.transform.position);
 
             if (distanceToTarget > attackRange) // 공격 범위 벗어나면 추적 상태로
             {
@@ -226,12 +215,9 @@ public class ZombieManager : MonoBehaviour
                 animator.SetTrigger("Attack");
                 Debug.Log(gameObject.name + " : 공격중");
 
-                //타겟 바라보기
-                //transform.LookAt(target.position);
-
                 //ai 제어로 타겟 바라보기
                 agent.isStopped = true;
-                agent.destination = target.position;
+                agent.destination = PlayerManager.Instance.transform.position;
 
                 audioSource.PlayOneShot(audioClipDamage);
 
