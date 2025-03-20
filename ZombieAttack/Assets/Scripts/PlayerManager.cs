@@ -106,6 +106,7 @@ public class PlayerManager : MonoBehaviour
 
     public float playerHP = 100.0f;
     public Text HPText;
+    private bool isAlive = true;
 
     public GameObject pauseObj;
     public bool isPaused = false;
@@ -163,22 +164,40 @@ public class PlayerManager : MonoBehaviour
         ActionFlashLight();
         SelectWeapon();
         SetMovingAnimation();
+        CheckAlive();
+        PauseGame();
 
         animator.speed = animationspeed;    //애니메이션 재생 속도 설정 및 저장
 
         bulletText.text = $"{loadedBullet}/{totalBullet}";
         HPText.text = $"{playerHP}/100";
 
-        PauseGame();
 
+    }
+    void CheckAlive()
+    {
+        if(playerHP == 0)
+        {
+            animator.SetLayerWeight(1, 0);
+            animator.Play("Dying");
+
+        }
+        else
+        {
+            return;
+        }
     }
     void PauseGame()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             isPaused = !isPaused;
-            pauseObj.SetActive(isPaused);
         }
+        PauseSystem();
+    }
+    void PauseSystem()
+    {
+        pauseObj.SetActive(isPaused);
         if (isPaused)
         {
             Time.timeScale = 0;
