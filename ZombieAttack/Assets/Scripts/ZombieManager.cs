@@ -14,13 +14,13 @@ public class ZombieManager : MonoBehaviour
     public Transform[] patrolPoints; //순찰 경로 지점들
     private int currentPoint = 0; //현재 순찰 경로 지점 인덱스
     public float moveSpeed = 2.0f;
-    private float trackingRange = 3.0f; //추적 범위 설정
+    public float trackingRange = 3.0f; //추적 범위 설정
     private bool isAttacking = false; //공격 상태
     //private float evadeRange = 5.0f; //도망 상태 회피 거리
     public float zombieHP = 100.0f;
     private float distanceToTarget; //Target과의 거리 계산 값
     //private bool isWaiting = false; //상태 전환 후 대기 상태 여부
-    public float ZombieIdleTime = 2.0f; //각 상태 전환 후 대기 시간
+    //public float ZombieIdleTime = 2.0f; //각 상태 전환 후 대기 시간
     private Coroutine stateRoutine;
 
     Animator animator;
@@ -43,6 +43,8 @@ public class ZombieManager : MonoBehaviour
     public AudioClip audioClipDamaged;
     public AudioClip audioClipAttack;
     public AudioClip audioClipDie;
+
+    public float zombieDamage = 20.0f;
 
     [System.Obsolete]
     private void Start()
@@ -254,9 +256,8 @@ public class ZombieManager : MonoBehaviour
 
                 if (player != null)
                 {
-                    float damage = 20.0f; // 공격 데미지 설정
-                    player.playerHP -= damage;
-                    Debug.Log($"플레이어가 {damage}의 피해를 입었습니다. 남은 HP: {player.playerHP}");
+                    player.playerHP -= zombieDamage;
+                    Debug.Log($"플레이어가 {zombieDamage}의 피해를 입었습니다. 남은 HP: {player.playerHP}");
 
                     // HP가 0 이하라면 사망 처리 (필요 시 추가 가능)
                     if (player.playerHP <= 0)
