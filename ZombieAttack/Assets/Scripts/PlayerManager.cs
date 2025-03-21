@@ -437,7 +437,6 @@ public class PlayerManager : MonoBehaviour
         targetFOV = FOV;
     }
 
-
     //3인칭/1인칭 줌 기능
     //함수에 비해 실행과 복귀가 편리
     IEnumerator ZoomCamera(float targetDistance)    //3인칭 줌(카메라 움직이기)
@@ -451,6 +450,7 @@ public class PlayerManager : MonoBehaviour
         currentDistance = targetDistance;       //목표 거리에 도달한 후 값을 고정
 
     }
+
     IEnumerator ZoomFieldOfView(float targetFOV)    //1인칭 줌(시야각 좁히기)
     {
 
@@ -502,6 +502,7 @@ public class PlayerManager : MonoBehaviour
             //(isCameraRotationSeperated ? "카메라가 플레이어와 별도로 회전합니다" : "카메라를 따라 플레이어가 회전합니다");
         }
     }
+
     void SetMovement()
     {
         //움직임
@@ -514,6 +515,7 @@ public class PlayerManager : MonoBehaviour
             ThirdPersonMovement();
         }
     }
+
     void Aim()
     {
         if (!isCameraRotationSeperated)
@@ -579,6 +581,7 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
+
     void Fire()
     {
 
@@ -673,12 +676,14 @@ public class PlayerManager : MonoBehaviour
         }
 
     }
+
     IEnumerator FireDelay(float fireDelay)
     {
 
         yield return new WaitForSeconds(fireDelay);
         isFireing = false;
     }
+
     // 총구 화염 끄는 코루틴 추가
     IEnumerator StopMuzzleFlash(float delay)
     {
@@ -733,6 +738,7 @@ public class PlayerManager : MonoBehaviour
 
 
     }
+
     IEnumerator HandleSelectWeapon()
     {
         //animator.SetLayerWeight(1, 1);
@@ -764,7 +770,6 @@ public class PlayerManager : MonoBehaviour
     {
         audioSource.PlayOneShot(audioClipEquip);
     }
-
 
     void UpdateAimTarget()
     {
@@ -808,7 +813,6 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-
     IEnumerator HandleItemPickup(RaycastHit[] hits)
     {
         yield return null; // 한 프레임 대기 (애니메이션 준비)
@@ -836,7 +840,5 @@ public class PlayerManager : MonoBehaviour
         animator.Play("Movement"); // 기본 동작 복귀
         RifleM4.SetActive(isHoldingRifle); // 이전 무기 상태 복구
     }
-
-
 
 }
