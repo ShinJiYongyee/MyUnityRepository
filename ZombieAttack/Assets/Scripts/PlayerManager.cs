@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.UI;
 using Random = System.Random;
-
 public enum WeaponMode
 {
     Pistol,
@@ -121,6 +121,7 @@ public class PlayerManager : MonoBehaviour
     //일시정지 메뉴
     public GameObject pauseObj;
     public bool isPaused = false;
+    public TextMeshProUGUI PauseText; //TextMeshPro를 수정하기 위한 자료형, using TMPro 필요
 
     //ParticleManager를 통해 접근해 총구화염을 출력할 위치
     public GameObject muzzle;
@@ -287,6 +288,7 @@ public class PlayerManager : MonoBehaviour
             animator.SetLayerWeight(1, 0);
             animator.Play("Dying");
             isAlive = false;
+            PauseText.text = "Dead";
             Invoke("SwitchPause", 3.0f);
 
         }

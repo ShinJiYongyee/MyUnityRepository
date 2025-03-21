@@ -32360,6 +32360,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 994314841}
     - target: {fileID: 3404368105785539157, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
+      propertyPath: PauseText
+      value: 
+      objectReference: {fileID: 1729827893}
+    - target: {fileID: 3404368105785539157, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
       propertyPath: hasM4Item
       value: 0
       objectReference: {fileID: 0}
