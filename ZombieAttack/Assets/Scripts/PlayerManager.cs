@@ -5,6 +5,14 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.UI;
+using Random = System.Random;
+
+public enum WeaponMode
+{
+    Pistol,
+    Shotgun,
+    Rifle,
+}
 
 public class PlayerManager : MonoBehaviour
 {
@@ -100,18 +108,35 @@ public class PlayerManager : MonoBehaviour
     private int totalBullet = 0;
     private int magSize = 30;
 
+    //전술 조명
     public GameObject flashLightObj;
     private bool isFlashLightOn = false;
     public AudioClip flashLightSound;
 
+    //플레이어 체력과 사망판정
     public float playerHP = 100.0f;
     public Text HPText;
     public bool isAlive;
 
+    //일시정지 메뉴
     public GameObject pauseObj;
     public bool isPaused = false;
 
+    //ParticleManager를 통해 접근해 총구화염을 출력할 위치
     public GameObject muzzle;
+
+    //무기를 변경하고 반동을 설정하기 위한 변수
+    private WeaponMode currentWeaponMode = WeaponMode.Rifle;
+    private int ShotgunRayCount = 8;
+    private float shotgunSpreadAngle = 10.0f;
+    private float recoilStrength = 2.0f;
+    private float maxRecoilAngle = 10.0f;
+    private float currentRecoil = 0.0f;
+    private float shakeDuration = 0.1f;
+    private float shakeMagnitude = 0.1f;
+    private Vector3 originalCameraPosition;
+    private Coroutine cameraShakeCoroutine;
+
     private void Awake()
     {
         //싱글톤 구현
@@ -149,7 +174,7 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        if(isAlive)
+        if (isAlive)
         {
             RotateCamera();
             StickOnGround();
@@ -178,11 +203,86 @@ public class PlayerManager : MonoBehaviour
         bulletText.text = $"{loadedBullet}/{totalBullet}";
         HPText.text = $"{playerHP}/100";
 
+        //반동을 제어하는 코드
+        if (currentRecoil > 0)
+        {
+            currentRecoil -= recoilStrength * Time.deltaTime;
+            currentRecoil = Mathf.Clamp(currentRecoil, 0, maxRecoilAngle);
+            Quaternion currentrotation = Camera.main.transform.rotation;
+            Quaternion recoilRotation = Quaternion.Euler(-currentRecoil, 0, 0);
+            Camera.main.transform.rotation = currentrotation * recoilRotation; //카메라 제어 코드 비활성화
+        }
+    }
+
+    void FireShotgun()
+    {
+        for (int i = 0; i < ShotgunRayCount; i++)
+        {
+            RaycastHit hit;
+
+            Vector3 origin = Camera.main.transform.position;
+            Vector3 spreadDirection = ShotgunSpread(Camera.main.transform.forward, shotgunSpreadAngle);
+            Debug.DrawRay(origin, spreadDirection * castDistance, Color.blue, 2.0f);
+            if(Physics.Raycast(origin, spreadDirection, out hit, castDistance, TargetLayerMask))
+            {
+                Debug.Log("Shotgun Hit : " + hit.collider.name);
+            }
+        }
+    }
+
+    Vector3 ShotgunSpread(Vector3 forwardDirection, float spreadAngle)
+    {
+        float spreadX = UnityEngine.Random.Range(-spreadAngle, spreadAngle);
+        float spreadY = UnityEngine.Random.Range(-spreadAngle, spreadAngle);
+        Vector3 spreadDirection = Quaternion.Euler(spreadX, spreadY, 0) * forwardDirection;
+        return spreadDirection;
 
     }
+
+    void ApplyRecoil()
+    {
+        //현재 카메라 월드 회전값 가져오기
+        Quaternion currentRotation = Camera.main.transform.rotation;        
+        //반동을 계산해서 X축 상하 회전에 추가
+        Quaternion recoilRotation = Quaternion.Euler(-currentRecoil, 0, 0); 
+        //현재 회전 값에 반동을 곱연산, 새 회전값 적용
+        Camera.main.transform.rotation = currentRotation* recoilRotation;   
+        //반동 값을 증가
+        currentRecoil += recoilStrength;
+        //반동 제한
+        currentRecoil = Mathf.Clamp(currentRecoil, 0 , maxRecoilAngle);
+    }
+
+    void StartCameraShake()
+    {
+        if(cameraShakeCoroutine != null)
+        {
+            StopCoroutine(cameraShakeCoroutine);
+        }
+        cameraShakeCoroutine = StartCoroutine(CameraShake(shakeDuration,shakeMagnitude));
+    }
+
+    IEnumerator CameraShake(float duration, float magnitude)
+    {
+        float elapsed = 0.0f;
+        Vector3 originalPosition = Camera.main.transform.position;
+        while (elapsed < duration)
+        {
+            float offsetX = UnityEngine.Random.Range(-1.0f, 1.0f) * magnitude;
+            float offsetY = UnityEngine.Random.Range(-1.0f, 1.0f) * magnitude;
+
+            Camera.main.transform.position = originalPosition + new Vector3(offsetX, offsetY, 0.0f);
+
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+        Camera.main.transform.position = originalPosition;
+    }
+
     void CheckAlive()
     {
-        if(playerHP == 0)
+        if (playerHP == 0)
         {
             animator.SetLayerWeight(1, 0);
             animator.Play("Dying");
@@ -260,7 +360,7 @@ public class PlayerManager : MonoBehaviour
     }
     void PlayReloadingAnimation()
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             animator.SetTrigger("isReloading");
         }
@@ -487,14 +587,34 @@ public class PlayerManager : MonoBehaviour
         {
             if (isAim && !isFireing)
             {
-                //("fire");
+                //총기에 따른 반동의 강도 설정
+                if (currentWeaponMode == WeaponMode.Pistol)
+                {
+                    recoilStrength = 10;
+                }
+                else if (currentWeaponMode == WeaponMode.Shotgun)
+                {
+                    recoilStrength = 40;
+                    //if (firebulletCount > 0)
+                    //{
+                    //    firebulletCount -= 1;
+                    //    bulletText.text = $"{firebulletCount}/{savebulletCount}";
+                    //    bulletText.gameObject.SetActive(true);
+                    //}
 
+                    FireShotgun();
+                }
+                else if (currentWeaponMode == WeaponMode.Rifle)
+                {
+                    recoilStrength = 10;
+                }
+
+                //탄 소진 코드, 잔탄이 없을 경우 사격 불가
                 if (loadedBullet > 0)
                 {
                     loadedBullet--;
                     bulletText.text = $"{loadedBullet}/{totalBullet}";
                     bulletText.gameObject.SetActive(true);
-
                 }
                 else
                 {
@@ -514,6 +634,10 @@ public class PlayerManager : MonoBehaviour
 
                 //fire delay data fix
                 StartCoroutine(FireDelay(rifleFireDelay));
+
+                //반동 적용
+                ApplyRecoil();
+                StartCameraShake();
 
                 //사격 시 가상의 광선을 발사
                 Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
