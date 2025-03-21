@@ -372,7 +372,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 0}
   characterController: {fileID: 8366247588971916191}
   playerHead: {fileID: 5383697991508090200}
-  thirdPersonDistance: 3
+  thirdPersonDistance: 1.5
   thirdPersonOffset: {x: 0, y: 1.5, z: 0}
   playerLookObj: {fileID: 9130754079702174635}
   zoomDistance: 1
@@ -405,6 +405,8 @@ MonoBehaviour:
   flashLightObj: {fileID: 4810636562650747951}
   flashLightSound: {fileID: 8300000, guid: 1b735f22c197f9446bc8b541eef1eaa8, type: 3}
   playerHP: 100
+  HPText: {fileID: 0}
+  isAlive: 0
   pauseObj: {fileID: 0}
   isPaused: 0
 --- !u!95 &353244338413144685

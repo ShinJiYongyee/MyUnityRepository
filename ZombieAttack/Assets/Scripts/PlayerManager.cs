@@ -111,6 +111,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject pauseObj;
     public bool isPaused = false;
 
+    public GameObject muzzle;
     private void Awake()
     {
         //½Ì±ÛÅæ ±¸Çö
