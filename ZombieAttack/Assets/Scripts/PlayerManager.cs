@@ -485,6 +485,8 @@ public class PlayerManager : MonoBehaviour
         {
             velocity.y = -2f;
         }
+        velocity.y += gravity * Time.deltaTime;
+        characterController.Move(velocity * Time.deltaTime);
     }
 
     void SwitchPerspective()
