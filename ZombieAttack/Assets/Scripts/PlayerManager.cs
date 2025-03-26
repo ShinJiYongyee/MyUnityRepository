@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = System.Random;
 public enum WeaponMode
@@ -224,7 +225,7 @@ public class PlayerManager : MonoBehaviour
             Vector3 origin = Camera.main.transform.position;
             Vector3 spreadDirection = ShotgunSpread(Camera.main.transform.forward, shotgunSpreadAngle);
             Debug.DrawRay(origin, spreadDirection * castDistance, Color.blue, 2.0f);
-            if(Physics.Raycast(origin, spreadDirection, out hit, castDistance, TargetLayerMask))
+            if (Physics.Raycast(origin, spreadDirection, out hit, castDistance, TargetLayerMask))
             {
                 Debug.Log("Shotgun Hit : " + hit.collider.name);
             }
@@ -243,24 +244,24 @@ public class PlayerManager : MonoBehaviour
     void ApplyRecoil()
     {
         //현재 카메라 월드 회전값 가져오기
-        Quaternion currentRotation = Camera.main.transform.rotation;        
+        Quaternion currentRotation = Camera.main.transform.rotation;
         //반동을 계산해서 X축 상하 회전에 추가
-        Quaternion recoilRotation = Quaternion.Euler(-currentRecoil, 0, 0); 
+        Quaternion recoilRotation = Quaternion.Euler(-currentRecoil, 0, 0);
         //현재 회전 값에 반동을 곱연산, 새 회전값 적용
-        Camera.main.transform.rotation = currentRotation* recoilRotation;   
+        Camera.main.transform.rotation = currentRotation * recoilRotation;
         //반동 값을 증가
         currentRecoil += recoilStrength;
         //반동 제한
-        currentRecoil = Mathf.Clamp(currentRecoil, 0 , maxRecoilAngle);
+        currentRecoil = Mathf.Clamp(currentRecoil, 0, maxRecoilAngle);
     }
 
     void StartCameraShake()
     {
-        if(cameraShakeCoroutine != null)
+        if (cameraShakeCoroutine != null)
         {
             StopCoroutine(cameraShakeCoroutine);
         }
-        cameraShakeCoroutine = StartCoroutine(CameraShake(shakeDuration,shakeMagnitude));
+        cameraShakeCoroutine = StartCoroutine(CameraShake(shakeDuration, shakeMagnitude));
     }
 
     IEnumerator CameraShake(float duration, float magnitude)
@@ -362,7 +363,7 @@ public class PlayerManager : MonoBehaviour
     }
     void PlayReloadingAnimation()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && totalBullet > 0 && loadedBullet < 30)
         {
             animator.SetTrigger("isReloading");
         }
@@ -844,5 +845,12 @@ public class PlayerManager : MonoBehaviour
         animator.Play("Movement"); // 기본 동작 복귀
         RifleM4.SetActive(isHoldingRifle); // 이전 무기 상태 복구
     }
+
+    ////Scene을 불러올 때 호출되는 함수
+    //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    //{
+    //    Debug.Log("Loaded Scene : "+scene.name);
+    //    //플레이어, npc, 아이템 등 초기화
+    //}
 
 }
