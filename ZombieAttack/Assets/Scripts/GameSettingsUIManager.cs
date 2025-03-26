@@ -14,8 +14,8 @@ public class GameSettingsUIManager : MonoBehaviour
     public TextMeshProUGUI graphicsQualityText;
 
     private int resolutionIndex = 0;
-    private int volumeIndex = 0;
-    private int screenSetupIndex = 0;
+    //private int volumeIndex = 0;
+    //private int screenSetupIndex = 0;
     private int graphicsQualityIndex = 0;
 
     private string[] resolutions = { "1280x720", "1920x1080", "2560x1440", "3840x2160" };

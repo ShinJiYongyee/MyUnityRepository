@@ -123,6 +123,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject pauseObj;
     public bool isPaused = false;
     public TextMeshProUGUI PauseText; //TextMeshPro를 수정하기 위한 자료형, using TMPro 필요
+    public GameObject ResumeButton;
 
     //ParticleManager를 통해 접근해 총구화염을 출력할 위치
     public GameObject muzzle;
@@ -308,6 +309,7 @@ public class PlayerManager : MonoBehaviour
         if (isPaused)
         {
             Debug.Log("Paused");
+            ResumeButton.SetActive(isAlive);
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

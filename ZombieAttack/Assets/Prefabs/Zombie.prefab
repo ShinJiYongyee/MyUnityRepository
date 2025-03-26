@@ -309,7 +309,7 @@ MonoBehaviour:
   attackDelay: 2
   patrolPoints: []
   moveSpeed: 2
-  trackingRange: 10
+  trackingRange: 100
   zombieHP: 100
   audioSource: {fileID: 1625472919357713051}
   audioClipDamage: {fileID: 8300000, guid: a2e13502feb75ca45b67268f8595eccd, type: 3}

@@ -65,7 +65,7 @@ public class ZombieManager : MonoBehaviour
     {
         if (PlayerManager.Instance == null)
         {
-            Debug.LogError("PlayerManager.Instance가 null입니다. PlayerManager가 제대로 초기화되지 않았을 가능성이 있습니다.");
+            //Error("PlayerManager.Instance가 null입니다. PlayerManager가 제대로 초기화되지 않았을 가능성이 있습니다.");
             return;
         }
         distanceToTarget = Vector3.Distance(transform.position, PlayerManager.Instance.transform.position);
@@ -143,7 +143,7 @@ public class ZombieManager : MonoBehaviour
 
     private IEnumerator ZombieIdle()
     {
-        Debug.Log(gameObject.name + " : 대기중");
+        //(gameObject.name + " : 대기중");
         animator.Play("ZombieIdle");
 
         yield return null;
@@ -152,7 +152,7 @@ public class ZombieManager : MonoBehaviour
 
     private IEnumerator Patrol()
     {
-        Debug.Log(gameObject.name + " : 순찰중");
+        //(gameObject.name + " : 순찰중");
 
         while (currentState == EZombieState.Patrol)
         {
@@ -181,7 +181,7 @@ public class ZombieManager : MonoBehaviour
     }
     private IEnumerator Chase()
     {
-        Debug.Log(gameObject.name + " 추적중");
+        //(gameObject.name + " 추적중");
 
         while (currentState == EZombieState.Chase)
         {
@@ -202,7 +202,7 @@ public class ZombieManager : MonoBehaviour
     {
         if(PlayerManager.Instance.isAlive)
         {
-            Debug.Log(gameObject.name + " : 공격 시작");
+            //(gameObject.name + " : 공격 시작");
             float animationLength = attackDelay;
 
             while (currentState == EZombieState.Attack)
@@ -220,7 +220,7 @@ public class ZombieManager : MonoBehaviour
 
                     isAttacking = true;
                     animator.SetTrigger("Attack");
-                    Debug.Log(gameObject.name + " : 공격중");
+                    //(gameObject.name + " : 공격중");
 
                     //ai 제어로 타겟 바라보기
                     agent.isStopped = true;
@@ -229,7 +229,7 @@ public class ZombieManager : MonoBehaviour
                 }
                 yield return new WaitForSeconds(animationLength); // 공격 간격 (딜레이)
                 isAttacking = false;
-                Debug.Log("isAttacking : " + isAttacking);
+                //("isAttacking : " + isAttacking);
                 agent.isStopped = false;
 
                 //yield return null; // 다음 프레임까지 대기
@@ -257,12 +257,12 @@ public class ZombieManager : MonoBehaviour
                 if (player != null)
                 {
                     player.playerHP -= zombieDamage;
-                    Debug.Log($"플레이어가 {zombieDamage}의 피해를 입었습니다. 남은 HP: {player.playerHP}");
+                    //($"플레이어가 {zombieDamage}의 피해를 입었습니다. 남은 HP: {player.playerHP}");
 
                     // HP가 0 이하라면 사망 처리 (필요 시 추가 가능)
                     if (player.playerHP <= 0)
                     {
-                        Debug.Log("플레이어 사망");
+                        //("플레이어 사망");
                         // 플레이어 사망 처리 함수 호출 가능 (예: player.Die();)
                     }
                 }
@@ -275,11 +275,11 @@ public class ZombieManager : MonoBehaviour
     {
         //animator.SetTrigger("Damage");
         zombieHP -= damage;
-        Debug.Log(gameObject.name + $" {damage} 데미지 받음, HP : {zombieHP}");
+        //(gameObject.name + $" {damage} 데미지 받음, HP : {zombieHP}");
         audioSource.PlayOneShot(audioClipDamage);
         if (zombieHP <= 0)
         {
-            Debug.Log(gameObject.name + " 죽음");
+            //(gameObject.name + " 죽음");
             ChanageState(EZombieState.Die);
         }
         else
@@ -294,7 +294,7 @@ public class ZombieManager : MonoBehaviour
         {
             yield break;
         }
-        Debug.Log(gameObject.name + " 사망 처리");
+        //(gameObject.name + " 사망 처리");
         audioSource.PlayOneShot(audioClipDie);
         animator.SetTrigger("Die");
         agent.isStopped = true;
@@ -305,13 +305,13 @@ public class ZombieManager : MonoBehaviour
     }
     private void RemoveCorpse()
     {
-        Debug.Log("시체 제거");
+        //("시체 제거");
         gameObject.SetActive(false);
     }
 
     private IEnumerator JumpAcrossLink()
     {
-        Debug.Log(gameObject.name + " 좀비 점프");
+        //(gameObject.name + " 좀비 점프");
 
         isJumping = true;
 
