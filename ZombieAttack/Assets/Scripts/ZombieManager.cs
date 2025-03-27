@@ -34,10 +34,10 @@ public class ZombieManager : MonoBehaviour
 
     public GameObject hand;
 
-    private bool isJumping = false;
+    public bool isJumping;
     private Rigidbody rb;
-    public float jumpHeight = 10.0f;
-    public float jumpDuration = 3.0f;
+    //public float jumpHeight = 10.0f;
+    //public float jumpDuration = 3.0f;
     private NavMeshLink[] navMeshLinks;
 
     public AudioClip audioClipDamaged;

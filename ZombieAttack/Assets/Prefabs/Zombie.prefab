@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 3
-  attackRange: 2
+  attackRange: 1
   attackDelay: 2
   patrolPoints: []
   moveSpeed: 2
@@ -334,7 +334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7841951e09d8a4479b6ae138467e208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Method: 3
   m_Curve:
     serializedVersion: 2
     m_Curve:
@@ -368,6 +367,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  jumpHeight: 6
+  jumpDuration: 1
 --- !u!136 &7366558429453615721
 CapsuleCollider:
   m_ObjectHideFlags: 0
