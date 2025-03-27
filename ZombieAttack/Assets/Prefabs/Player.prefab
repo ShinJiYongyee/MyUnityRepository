@@ -354,6 +354,7 @@ Transform:
   - {fileID: 3094732609903485327}
   - {fileID: 599439478913111372}
   - {fileID: 3315985041957093930}
+  - {fileID: 1896903175571244054}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3404368105785539157
@@ -369,14 +370,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  mouseSensitivity: 100
-  cameraTransform: {fileID: 0}
+  mouseSensitivity: 200
+  cameraTransform: {fileID: 1896903175571244054}
   characterController: {fileID: 8366247588971916191}
   playerHead: {fileID: 5383697991508090200}
-  thirdPersonDistance: 1.5
+  thirdPersonDistance: 1
   thirdPersonOffset: {x: 0, y: 1.5, z: 0}
   playerLookObj: {fileID: 9130754079702174635}
-  zoomDistance: 1
+  zoomDistance: 0.6
   zoomSpeed: 5
   defaultFOV: 60
   zoomFOV: 30
@@ -415,6 +416,8 @@ MonoBehaviour:
   muzzle: {fileID: 2777840812899542495}
   audioReloadClip: {fileID: 8300000, guid: 2bf82cceb2119c34da31a0537fadbe3b, type: 3}
   audioEmptyChamberSoundClip: {fileID: 8300000, guid: d5b30d18c9bff1e4d938deb59e4c3e26, type: 3}
+  hasFenceGateKey: 0
+  hasWon: 0
 --- !u!95 &353244338413144685
 Animator:
   serializedVersion: 7
@@ -686,6 +689,37 @@ Transform:
   - {fileID: 9012258830219464315}
   - {fileID: 611574632674228517}
   - {fileID: 6044471066500384631}
+  m_Father: {fileID: 2773525425139795852}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1269843799414102156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1896903175571244054}
+  m_Layer: 0
+  m_Name: CameraTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1896903175571244054
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269843799414102156}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.04198679, y: 0.0044863825, z: -0.00018709572, w: -0.99910814}
+  m_LocalPosition: {x: 0.64042664, y: 1.6044835, z: -0.9094296}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 2773525425139795852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1327342510794804252

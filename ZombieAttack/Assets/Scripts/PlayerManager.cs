@@ -147,6 +147,14 @@ public class PlayerManager : MonoBehaviour
 
     private bool isLoading = false;
 
+    public bool hasWon = false;
+
+    public AudioClip runSound;
+    public AudioClip walkSound;
+    private bool isMoving = false;
+    private Coroutine footstepCoroutine;
+
+
 
     private void Awake()
     {
@@ -203,11 +211,11 @@ public class PlayerManager : MonoBehaviour
             ActionFlashLight();
             SelectWeapon();
             SetMovingAnimation();
-
         }
 
         CheckAlive();
         CheckPaused();
+        CheckWon();
 
         animator.speed = animationspeed;    //애니메이션 재생 속도 설정 및 저장
 
@@ -224,7 +232,32 @@ public class PlayerManager : MonoBehaviour
             Camera.main.transform.rotation = currentrotation * recoilRotation; //카메라 제어 코드 비활성화
         }
     }
-
+    IEnumerator PlayFootstepSound()
+    {
+        while (isMoving)
+        {
+            if (isRunning)
+            {
+                audioSource.PlayOneShot(runSound);
+                yield return new WaitForSeconds(0.25f); // 달릴 때는 0.25초 간격
+            }
+            else
+            {
+                audioSource.PlayOneShot(walkSound);
+                yield return new WaitForSeconds(0.5f); // 걸을 때는 0.5초 간격
+            }
+        }
+    }
+    IEnumerator PlayWalkSound()
+    {
+        audioSource.PlayOneShot(walkSound);
+        yield return new WaitForSeconds(0.5f);
+    }
+    IEnumerator PlayRunSound()
+    {
+        audioSource.PlayOneShot(runSound);
+        yield return new WaitForSeconds(0.25f);
+    }
     void FireShotgun()
     {
         for (int i = 0; i < ShotgunRayCount; i++)
@@ -333,7 +366,19 @@ public class PlayerManager : MonoBehaviour
     {
         isPaused = !isPaused;
     }
+    void CheckWon()
+    {
+        if (hasWon)
+        {
+            pauseObj.SetActive(true);
+            ResumeButton.SetActive(false);
+            PauseText.text = "You Win!";
+            Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
 
+        }
+    }
     void ActionFlashLight()
     {
         if (Input.GetKeyDown(KeyCode.T))
@@ -419,6 +464,24 @@ public class PlayerManager : MonoBehaviour
 
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
         characterController.Move(move * moveSpeed * Time.deltaTime);
+
+        if (move.magnitude > 0)
+        {
+            if (!isMoving)
+            {
+                isMoving = true;
+                footstepCoroutine = StartCoroutine(PlayFootstepSound());
+            }
+        }
+        else
+        {
+            isMoving = false;
+            if (footstepCoroutine != null)
+            {
+                StopCoroutine(footstepCoroutine);
+                footstepCoroutine = null;
+            }
+        }
 
         UpdateCameraPosition();
 
@@ -876,4 +939,5 @@ public class PlayerManager : MonoBehaviour
     //    //플레이어, npc, 아이템 등 초기화
     //}
 
+    
 }
