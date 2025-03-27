@@ -1,19 +1,16 @@
 using UnityEngine;
 
-public class ItemRotator : MonoBehaviour
+public class ItemManager : MonoBehaviour
 {
     private void Start()
     {
         CheckForDuplicate();
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.Rotate(0, Time.deltaTime % 360 * 60, 0);
     }
-
-
 
     private void CheckForDuplicate()
     {
@@ -24,6 +21,21 @@ public class ItemRotator : MonoBehaviour
             {
                 Destroy(gameObject);
                 return;
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) // Trigger 충돌 감지
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerManager playerManager = other.GetComponent<PlayerManager>();
+            if (playerManager != null)
+            {
+                playerManager.hasM4Item = true;
+                playerManager.weaponIconObj.SetActive(true);
+                playerManager.totalBullet += 30;
+                Destroy(gameObject);
             }
         }
     }

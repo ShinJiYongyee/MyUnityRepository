@@ -106,7 +106,7 @@ public class PlayerManager : MonoBehaviour
     //잔탄 표시 UI
     public Text bulletText;
     private int loadedBullet = 0;
-    private int totalBullet = 0;
+    public int totalBullet = 0;
     private int magSize = 30;
 
     //전술 조명
@@ -205,7 +205,7 @@ public class PlayerManager : MonoBehaviour
                 Aim();
                 Fire();
                 Run();
-                GetItem();
+                //GetItem();
                 PlayReloadingAnimation();
             }
             ActionFlashLight();
@@ -220,7 +220,7 @@ public class PlayerManager : MonoBehaviour
         animator.speed = animationspeed;    //애니메이션 재생 속도 설정 및 저장
 
         bulletText.text = $"{loadedBullet}/{totalBullet}";
-        HPText.text = $"{playerHP}/100";
+        HPText.text = $"{playerHP}";
 
         //반동을 제어하는 코드
         if (currentRecoil > 0)
