@@ -4,10 +4,11 @@ public class EscapePointManager : MonoBehaviour
 {
     public GameObject chopperPrefab;
     public Transform chopperSpawnPoint;
+    private bool isChopperSpawned = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !isChopperSpawned)
         {
             SpawnChopper();
         }
@@ -16,6 +17,7 @@ public class EscapePointManager : MonoBehaviour
     private void SpawnChopper()
     {
         GameObject chopper = Instantiate(chopperPrefab, chopperSpawnPoint.position, Quaternion.identity);
+        isChopperSpawned=true;
         ChopperManager chopperManager = chopper.GetComponent<ChopperManager>();
         if (chopperManager != null)
         {
