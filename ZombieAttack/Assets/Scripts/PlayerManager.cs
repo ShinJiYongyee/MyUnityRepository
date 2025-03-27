@@ -143,6 +143,10 @@ public class PlayerManager : MonoBehaviour
     public AudioClip audioReloadClip;
     public AudioClip audioEmptyChamberSoundClip;
 
+    public bool hasFenceGateKey = false;
+
+    private bool isLoading = false;
+
 
     private void Awake()
     {
@@ -369,11 +373,22 @@ public class PlayerManager : MonoBehaviour
     }
     void PlayReloadingAnimation()
     {
-        if (Input.GetKeyDown(KeyCode.R) && totalBullet > 0 && loadedBullet < 30)
+        if (Input.GetKeyDown(KeyCode.R) && totalBullet > 0 && loadedBullet < 30 && !isLoading)
         {
+            isLoading = true;
             animator.SetTrigger("isReloading");
             audioSource.PlayOneShot(audioReloadClip);
+            StartCoroutine(LoadingDelay());
         }
+    }
+
+    IEnumerator LoadingDelay()
+    {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(1);
+        float animationLength = stateInfo.length;
+
+        yield return new WaitForSeconds(animationLength+1.0f);
+        isLoading = false;
     }
 
 
