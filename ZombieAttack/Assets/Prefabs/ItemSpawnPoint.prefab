@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPrefab: {fileID: 6730768964856812952, guid: e78560042287c9144a6e12925d9e5e2f, type: 3}
-  spawnInterval: 3
+  spawnInterval: 12
   spawnPoints:
   - {fileID: 4083200318312169787}
   parent: {fileID: 5613692951630671697}

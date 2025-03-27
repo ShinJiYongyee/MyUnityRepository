@@ -140,6 +140,10 @@ public class PlayerManager : MonoBehaviour
     private Vector3 originalCameraPosition;
     private Coroutine cameraShakeCoroutine;
 
+    public AudioClip audioReloadClip;
+    public AudioClip audioEmptyChamberSoundClip;
+
+
     private void Awake()
     {
         //½Ì±ÛÅæ ±¸Çö
@@ -368,6 +372,7 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && totalBullet > 0 && loadedBullet < 30)
         {
             animator.SetTrigger("isReloading");
+            audioSource.PlayOneShot(audioReloadClip);
         }
     }
 
@@ -625,11 +630,13 @@ public class PlayerManager : MonoBehaviour
                     loadedBullet--;
                     bulletText.text = $"{loadedBullet}/{totalBullet}";
                     bulletText.gameObject.SetActive(true);
+                    audioSource.PlayOneShot(audioClipFire);
                 }
                 else
                 {
                     //ÀçÀåÀü?
                     //ÀÜÅº °í°¥ È¿°úÀ½
+                    audioSource.PlayOneShot(audioEmptyChamberSoundClip);
                     return;
                 }
 
@@ -637,7 +644,6 @@ public class PlayerManager : MonoBehaviour
                 weaponMaxDistance = 1000.0f;
                 isFireing = true;
                 animator.SetTrigger("Fire");
-                audioSource.PlayOneShot(audioClipFire);
                 M4Effect.Play();
                 StartCoroutine(StopMuzzleFlash(muzzleFlashDuration)); //ÃÑ±¸ È­¿° ²ô±â
 

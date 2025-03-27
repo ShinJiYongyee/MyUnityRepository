@@ -36,8 +36,8 @@ public class ZombieManager : MonoBehaviour
 
     private bool isJumping = false;
     private Rigidbody rb;
-    public float jumpHeight = 5.0f;
-    public float jumpDuration = 1.0f;
+    public float jumpHeight = 10.0f;
+    public float jumpDuration = 3.0f;
     private NavMeshLink[] navMeshLinks;
 
     public AudioClip audioClipDamaged;
@@ -46,6 +46,7 @@ public class ZombieManager : MonoBehaviour
     public AudioClip audioClipWalk;
 
     public float zombieDamage = 20.0f;
+
 
     [System.Obsolete]
     private void Start()
@@ -153,7 +154,7 @@ public class ZombieManager : MonoBehaviour
 
     private IEnumerator Patrol()
     {
-        //(gameObject.name + " : 순찰중");
+        Debug.Log(gameObject.name + " : 순찰중");
 
         while (currentState == EZombieState.Patrol)
         {
@@ -166,10 +167,10 @@ public class ZombieManager : MonoBehaviour
                 agent.isStopped = false;    //ai의 정지 여부 설정
                 agent.destination = patrolPoints[currentPoint].position;  //ai의 목적지를 설정
 
-                if (agent.isOnOffMeshLink)
-                {
-                    StartCoroutine(JumpAcrossLink());
-                }
+                //if (agent.isOnOffMeshLink)
+                //{
+                //    StartCoroutine(JumpAcrossLink());
+                //}
                 if (Vector3.Distance(transform.position, agent.destination) < 0.5f)
                 {
                     currentPoint = (currentPoint + 1) % patrolPoints.Length;
@@ -182,7 +183,7 @@ public class ZombieManager : MonoBehaviour
     }
     private IEnumerator Chase()
     {
-        //(gameObject.name + " 추적중");
+        Debug.Log(gameObject.name + " 추적중");
 
         while (currentState == EZombieState.Chase)
         {
@@ -242,8 +243,6 @@ public class ZombieManager : MonoBehaviour
 
     public void GiveDamage()
     {
-        // 공격 사운드 재생
-        audioSource.PlayOneShot(audioClipAttack);
 
         // hand 오브젝트 주변의 충돌 감지 (Trigger로 설정된 Collider 필요)
         Collider[] hitColliders = Physics.OverlapSphere(hand.transform.position, 0.5f);
@@ -254,6 +253,9 @@ public class ZombieManager : MonoBehaviour
             if (hit.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
                 PlayerManager player = hit.GetComponent<PlayerManager>();
+
+                // 공격 사운드 재생
+                audioSource.PlayOneShot(audioClipAttack);
 
                 if (player != null)
                 {
@@ -310,40 +312,40 @@ public class ZombieManager : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private IEnumerator JumpAcrossLink()
-    {
-        //(gameObject.name + " 좀비 점프");
+    //private IEnumerator JumpAcrossLink()
+    //{
+    //    //(gameObject.name + " 좀비 점프");
 
-        isJumping = true;
+    //    isJumping = true;
 
-        agent.isStopped = true;
+    //    agent.isStopped = true;
 
-        //NavMeshLink의 시작과 끝 좌표를 가져오기
-        OffMeshLinkData linkData = agent.currentOffMeshLinkData;
-        Vector3 startPos = linkData.startPos;
-        Vector3 endPos = linkData.endPos;
+    //    //NavMeshLink의 시작과 끝 좌표를 가져오기
+    //    OffMeshLinkData linkData = agent.currentOffMeshLinkData;
+    //    Vector3 startPos = linkData.startPos;
+    //    Vector3 endPos = linkData.endPos;
 
-        //점프 경로 계산(포물선을 그리며 점프)
-        float elapsedTime = 0;
-        while(elapsedTime < jumpDuration)
-        {
-            float t = elapsedTime/jumpDuration;
-            Vector3 currentPosition = Vector3.Lerp(startPos, endPos, t);
-            currentPosition.y += Mathf.Sin(t * Mathf.PI) * jumpHeight; //포물선 경로
-            transform.position = currentPosition;
+    //    //점프 경로 계산(포물선을 그리며 점프)
+    //    float elapsedTime = 0;
+    //    while (elapsedTime < jumpDuration)
+    //    {
+    //        float t = elapsedTime / jumpDuration;
+    //        Vector3 currentPosition = Vector3.Lerp(startPos, endPos, t);
+    //        currentPosition.y += Mathf.Sin(t * Mathf.PI) * jumpHeight; //포물선 경로
+    //        transform.position = currentPosition;
 
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+    //        elapsedTime += Time.deltaTime;
+    //        yield return null;
+    //    }
 
-        //도착점에 위치
-        transform.position = endPos;
+    //    //도착점에 위치
+    //    transform.position = endPos;
 
-        //NavMeshAgent 경로 재개
-        agent.CompleteOffMeshLink();
-        agent.isStopped = false;
-        isJumping = false;
-    }
+    //    //NavMeshAgent 경로 재개
+    //    agent.CompleteOffMeshLink();
+    //    agent.isStopped = false;
+    //    isJumping = false;
+    //}
 
     public void PlayFootstepSound()
     {
