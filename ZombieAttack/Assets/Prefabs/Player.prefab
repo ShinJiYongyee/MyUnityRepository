@@ -371,7 +371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   mouseSensitivity: 200
-  cameraTransform: {fileID: 1896903175571244054}
+  cameraTransform: {fileID: 0}
   characterController: {fileID: 8366247588971916191}
   playerHead: {fileID: 5383697991508090200}
   thirdPersonDistance: 1
@@ -404,6 +404,7 @@ MonoBehaviour:
   M4Effect: {fileID: 4407563029353606164}
   damageParticleSystem: {fileID: 19800002, guid: 3b1513bcb86426b4795879be6a128ed7, type: 3}
   bulletText: {fileID: 0}
+  totalBullet: 0
   flashLightObj: {fileID: 4810636562650747951}
   flashLightSound: {fileID: 8300000, guid: 1b735f22c197f9446bc8b541eef1eaa8, type: 3}
   playerHP: 100
@@ -418,6 +419,8 @@ MonoBehaviour:
   audioEmptyChamberSoundClip: {fileID: 8300000, guid: d5b30d18c9bff1e4d938deb59e4c3e26, type: 3}
   hasFenceGateKey: 0
   hasWon: 0
+  runSound: {fileID: 8300000, guid: 00df0b1176255294f8fb8354a49e209e, type: 3}
+  walkSound: {fileID: 8300000, guid: 5299733cb78495645bb197d7d8550ce7, type: 3}
 --- !u!95 &353244338413144685
 Animator:
   serializedVersion: 7

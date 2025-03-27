@@ -38429,6 +38429,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 661347858195332271, guid: 072fd589dab53124398e5316e78e9958, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2930019056163777980, guid: 072fd589dab53124398e5316e78e9958, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -38551,10 +38555,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 353244338413144685, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
-      propertyPath: m_WarningMessage
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2773525425139795852, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.0192358
@@ -38604,17 +38604,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 994314841}
     - target: {fileID: 3404368105785539157, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
-      propertyPath: runSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 00df0b1176255294f8fb8354a49e209e, type: 3}
-    - target: {fileID: 3404368105785539157, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
       propertyPath: PauseText
       value: 
       objectReference: {fileID: 1729827893}
-    - target: {fileID: 3404368105785539157, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
-      propertyPath: walkSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 5299733cb78495645bb197d7d8550ce7, type: 3}
     - target: {fileID: 3404368105785539157, guid: aac70959f8f6cb8489ed26d0f756eacd, type: 3}
       propertyPath: bulletText
       value: 

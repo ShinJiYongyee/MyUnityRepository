@@ -253,9 +253,11 @@ public class ZombieManager : MonoBehaviour
             if (hit.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
                 PlayerManager player = hit.GetComponent<PlayerManager>();
+                Animator animator = player.GetComponent<Animator>();
 
                 // 공격 사운드 재생
                 audioSource.PlayOneShot(audioClipAttack);
+                animator.SetTrigger("GettingHit");
 
                 if (player != null)
                 {

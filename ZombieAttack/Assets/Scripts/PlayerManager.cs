@@ -132,8 +132,8 @@ public class PlayerManager : MonoBehaviour
     private WeaponMode currentWeaponMode = WeaponMode.Rifle;
     private int ShotgunRayCount = 8;
     private float shotgunSpreadAngle = 10.0f;
-    private float recoilStrength = 2.0f;
-    private float maxRecoilAngle = 10.0f;
+    private float recoilStrength = 1.0f;
+    private float maxRecoilAngle = 3.0f;
     private float currentRecoil = 0.0f;
     private float shakeDuration = 0.1f;
     private float shakeMagnitude = 0.1f;
@@ -285,6 +285,7 @@ public class PlayerManager : MonoBehaviour
 
     void ApplyRecoil()
     {
+
         //현재 카메라 월드 회전값 가져오기
         Quaternion currentRotation = Camera.main.transform.rotation;
         //반동을 계산해서 X축 상하 회전에 추가
@@ -312,10 +313,10 @@ public class PlayerManager : MonoBehaviour
         Vector3 originalPosition = Camera.main.transform.position;
         while (elapsed < duration)
         {
-            float offsetX = UnityEngine.Random.Range(-1.0f, 1.0f) * magnitude;
+            //float offsetX = UnityEngine.Random.Range(-1.0f, 1.0f) * magnitude;
             float offsetY = UnityEngine.Random.Range(-1.0f, 1.0f) * magnitude;
 
-            Camera.main.transform.position = originalPosition + new Vector3(offsetX, offsetY, 0.0f);
+            Camera.main.transform.position = originalPosition + new Vector3(0.0f, offsetY, 0.0f);
 
             elapsed += Time.deltaTime;
 
@@ -731,7 +732,7 @@ public class PlayerManager : MonoBehaviour
 
                 //반동 적용
                 ApplyRecoil();
-                StartCameraShake();
+                //StartCameraShake();
 
                 //사격 시 가상의 광선을 발사
                 Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
