@@ -14,7 +14,7 @@ public class ZombieManager : MonoBehaviour
     public Transform[] patrolPoints; //순찰 경로 지점들
     private int currentPoint = 0; //현재 순찰 경로 지점 인덱스
     public float moveSpeed = 2.0f;
-    public float trackingRange = 3.0f; //추적 범위 설정
+    public float trackingRange = 100.0f; //추적 범위 설정
     private bool isAttacking = false; //공격 상태
     //private float evadeRange = 5.0f; //도망 상태 회피 거리
     public float zombieHP = 100.0f;
@@ -36,13 +36,14 @@ public class ZombieManager : MonoBehaviour
 
     private bool isJumping = false;
     private Rigidbody rb;
-    public float jumpHeight = 2.0f;
+    public float jumpHeight = 5.0f;
     public float jumpDuration = 1.0f;
     private NavMeshLink[] navMeshLinks;
 
     public AudioClip audioClipDamaged;
     public AudioClip audioClipAttack;
     public AudioClip audioClipDie;
+    public AudioClip audioClipWalk;
 
     public float zombieDamage = 20.0f;
 
@@ -342,6 +343,11 @@ public class ZombieManager : MonoBehaviour
         agent.CompleteOffMeshLink();
         agent.isStopped = false;
         isJumping = false;
+    }
+
+    public void PlayFootstepSound()
+    {
+        audioSource.PlayOneShot(audioClipWalk);
     }
 
 

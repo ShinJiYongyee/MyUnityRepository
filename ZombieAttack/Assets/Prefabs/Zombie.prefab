@@ -319,6 +319,7 @@ MonoBehaviour:
   audioClipDamaged: {fileID: 8300000, guid: b261bcf3a2ed070488ec8f7f23156fad, type: 3}
   audioClipAttack: {fileID: 8300000, guid: a2e13502feb75ca45b67268f8595eccd, type: 3}
   audioClipDie: {fileID: 8300000, guid: dbd11304a0766d34b87607be6b4bc226, type: 3}
+  audioClipWalk: {fileID: 8300000, guid: 0e0528aee26a23649ae9b6ef98cd4a8a, type: 3}
   zombieDamage: 20
 --- !u!136 &7366558429453615721
 CapsuleCollider:

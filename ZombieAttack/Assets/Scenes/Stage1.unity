@@ -2208,7 +2208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPrefab: {fileID: 834150598580433158, guid: d7360d2a0e2c3274ba72e738e9de8191, type: 3}
-  spawnInterval: 2
+  spawnInterval: 4
   spawnPoints:
   - {fileID: 741649999}
   - {fileID: 1991747937}
@@ -11554,7 +11554,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 572620859}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -20220,6 +20220,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: e5da93bf3ff477c4f8f88f51e419c805, type: 3}
   m_PrefabInstance: {fileID: 1089244523}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1103994092 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 145600, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
+  m_PrefabInstance: {fileID: 1292883161}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1109602273
 GameObject:
   m_ObjectHideFlags: 0
@@ -20519,6 +20524,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1136982367}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1145694348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 145600, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
+  m_PrefabInstance: {fileID: 1252866182}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1150676406
 GameObject:
   m_ObjectHideFlags: 0
@@ -22792,6 +22802,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 951049136}
     m_Modifications:
+    - target: {fileID: 145600, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
+      propertyPath: m_Name
+      value: FenceGageLeft
+      objectReference: {fileID: 0}
     - target: {fileID: 404014, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
       propertyPath: m_RootOrder
       value: 252
@@ -22835,13 +22849,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 145600, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1252866187}
   m_SourcePrefab: {fileID: 100100000, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
 --- !u!4 &1252866183 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 404014, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
   m_PrefabInstance: {fileID: 1252866182}
   m_PrefabAsset: {fileID: 0}
+--- !u!208 &1252866187
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145694348}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.059000004, y: 0.82000005, z: 1.4180001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.77400005, z: 1.485}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1263949172
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23919,7 +23952,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 145600, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
       propertyPath: m_Name
-      value: fence_gate 1
+      value: FenceGateRight
       objectReference: {fileID: 0}
     - target: {fileID: 404014, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
       propertyPath: m_RootOrder
@@ -23964,13 +23997,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 145600, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1292883166}
   m_SourcePrefab: {fileID: 100100000, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
 --- !u!4 &1292883162 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 404014, guid: 5cd829d670d42cf458be57a99ad05bf4, type: 3}
   m_PrefabInstance: {fileID: 1292883161}
   m_PrefabAsset: {fileID: 0}
+--- !u!208 &1292883166
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103994092}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.059000004, y: 0.82000005, z: 1.4180001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.77400005, z: 1.485}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1294565567
 PrefabInstance:
   m_ObjectHideFlags: 0
