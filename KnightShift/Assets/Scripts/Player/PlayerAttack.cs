@@ -34,7 +34,8 @@ public class PlayerAttack : MonoBehaviour
             if (!playerAnimation.isDoingAction)
             {
                 playerAnimation.TriggerAttack();
-                playerAudio.PlaySwordSwing();
+                //playerAudio.PlaySwordSwing();
+                SoundManager.Instance.PlaySFX(SoundManager.SFXType.SwordSwing);
             }
             else
             {

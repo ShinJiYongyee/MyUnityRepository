@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rigidBody;
     private bool isGrounded;
 
+    private float moveInput;
+
     [Header("Ground Check")]
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
@@ -30,30 +32,10 @@ public class PlayerMovement : MonoBehaviour
 
     public void HandleMovement()
     {
-        float moveInput = Input.GetAxis("Horizontal");
-        rigidBody.linearVelocity = new Vector2(moveInput * moveSpeed, rigidBody.linearVelocity.y);
-
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-        //플레이어 회전
+        HorizontalMove();
         HandleRotation(moveInput);
-
-        //애니메이션을 적용받는 움직임들
-        if (playerAnimation != null)
-        {
-            if (Input.GetKeyDown(KeyCode.W) && isGrounded)
-            {
-                rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                playerAnimation.TriggerJump();
-                playerAudio.PlayBoingJump();
-            }
-
-            isRunning = (moveInput != 0);
-            playerAnimation.SetRunning(isRunning && isGrounded);
-
-        }
-
-        animator.SetBool("IsGrounded", isGrounded);
+        PerformJump();
+        OnGround();
 
     }
     private void HandleRotation(float moveInput)
@@ -61,12 +43,37 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput >= 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
-
         }
         else
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
+    }
+    private void PerformJump()
+    {
+        if (Input.GetKeyDown(KeyCode.W) && isGrounded)
+        {
+            rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            playerAnimation.TriggerJump();
+            //playerAudio.PlayBoingJump();
+            SoundManager.Instance.PlaySFX(SoundManager.SFXType.Jump);
+        }
+    }
+
+    private void HorizontalMove()
+    {
+        moveInput = Input.GetAxis("Horizontal");
+        rigidBody.linearVelocity = new Vector2(moveInput * moveSpeed, rigidBody.linearVelocity.y);
+        isRunning = (moveInput != 0);
+        playerAnimation.SetRunning(isRunning && isGrounded);
+    }
+
+    private void OnGround()
+    {
+
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        animator.SetBool("IsGrounded", isGrounded);
+
     }
 
 }
