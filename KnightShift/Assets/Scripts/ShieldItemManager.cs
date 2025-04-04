@@ -8,6 +8,7 @@ public class ShieldItemManager : MonoBehaviour
         {
             PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
             playerHealth.shieldCount++;
+            SoundManager.Instance.PlaySFX(SFXType.Blocked);
             Destroy(gameObject);
 
         }

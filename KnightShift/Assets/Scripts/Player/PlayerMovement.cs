@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
             rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             playerAnimation.TriggerJump();
             //playerAudio.PlayBoingJump();
-            SoundManager.Instance.PlaySFX(SoundManager.SFXType.Jump);
+            SoundManager.Instance.PlaySFX(SFXType.Jump);
         }
     }
 
