@@ -22,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerAudio playerAudio;
 
+    public bool lookingRight = true;
+
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
@@ -40,7 +42,19 @@ public class PlayerMovement : MonoBehaviour
     }
     private void HandleRotation(float moveInput)
     {
-        if (moveInput >= 0)
+        if (moveInput > 0)
+        {
+            lookingRight = true;
+        }
+        else if(moveInput < 0) 
+        {
+            lookingRight = false;
+        }
+        SwitchRotation();
+    }
+    private void SwitchRotation()
+    {
+        if (lookingRight)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }

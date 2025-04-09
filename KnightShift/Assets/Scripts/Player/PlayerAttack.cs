@@ -24,6 +24,8 @@ public class PlayerAttack : MonoBehaviour
     //cinemachine의 impulse listener와 impulse source를 이용한 camera shake
     public CinemachineImpulseSource impulseSource;
 
+    public float playerDamage = 20;
+
     void Start()
     {
         animator = GetComponent<Animator>();
