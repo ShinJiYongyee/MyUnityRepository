@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
@@ -12,9 +13,14 @@ public class PlayerUI : MonoBehaviour
     public GameObject PauseMenu;
     private bool isPaused = false;
 
+    public Slider healthBar;
+
     private void Start()
     {
         playerHealth = GetComponent<PlayerHealth>();
+        healthBar.maxValue = playerHealth.health;
+        healthBar.value = playerHealth.health;
+        healthBar.minValue = 0;
     }
     public void CheckStatus()
     {
@@ -52,6 +58,7 @@ public class PlayerUI : MonoBehaviour
         if (playerHealth != null)
         {
             healthCountUI.text = $"{playerHealth.health.ToString()}/100";
+            healthBar.value = playerHealth.health;
         }
         else
         {
