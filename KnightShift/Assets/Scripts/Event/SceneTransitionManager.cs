@@ -3,9 +3,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MenuManager : MonoBehaviour
+public class SceneTransitionManager : MonoBehaviour
 {
-    public static MenuManager instance { get; private set; }
+    public static SceneTransitionManager instance { get; private set; }
 
     public Image panel;
     public float fadeDuration = 1.0f;
@@ -104,17 +104,10 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
-    {
-        StartSceneTransition("Stage1");
-    }
+    //public void StartGame()
+    //{
+    //    StartSceneTransition("Stage1");
+    //}
 
-    public void ExitGame()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit(); // 어플리케이션 종료
-#endif        
-    }
+
 }

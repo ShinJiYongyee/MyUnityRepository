@@ -8114,7 +8114,7 @@ GameObject:
   - component: {fileID: 873227189}
   - component: {fileID: 873227188}
   m_Layer: 0
-  m_Name: MenuManager
+  m_Name: SceneTransitionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
