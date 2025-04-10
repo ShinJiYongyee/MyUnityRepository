@@ -12,6 +12,8 @@ public class PlayerUI : MonoBehaviour
 
     public GameObject PauseMenu;
     private bool isPaused = false;
+    public TextMeshProUGUI pauseText;
+    public GameObject resumeButton;
 
     public Slider healthBar;
 
@@ -34,7 +36,7 @@ public class PlayerUI : MonoBehaviour
     }
     public void CheckStatus()
     {
-        ChechHealth();
+        CheckHealth();
         ChechShieldCount();
         SwitchPause();
     }
@@ -63,10 +65,15 @@ public class PlayerUI : MonoBehaviour
         isPaused = !isPaused;
     }
 
-    private void ChechHealth()
+    private void CheckHealth()
     {
         if (playerHealth != null)
         {
+            if (!playerHealth.isAlive)
+            {
+                pauseText.text = "You Died";
+                resumeButton.SetActive(false);
+            }
             healthCountUI.text = $"{playerHealth.health.ToString()}/100";
             healthBar.value = playerHealth.health;
         }
