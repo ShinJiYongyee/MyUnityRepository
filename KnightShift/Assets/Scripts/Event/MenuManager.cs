@@ -27,6 +27,7 @@ public class MenuManager : MonoBehaviour
 
     public void StartSceneTransition(string sceneName)
     {
+        Debug.Log("Scene Transition Called: " + sceneName);
         if (!isFading)
         {
             nextSceneName = sceneName;
