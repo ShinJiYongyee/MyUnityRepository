@@ -19,6 +19,10 @@ public class TutorialEvent : MonoBehaviour
     {
         if(other.name == "Player")
         {
+            if (tutorialUI.CompareTag("Slime"))
+            {
+                return;
+            }
             tutorialUI.SetActive(false);
         }
     }
