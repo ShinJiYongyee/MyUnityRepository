@@ -16,11 +16,16 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody2D rb;
 
     private EnemyHealth enemyHealth;
+    public Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         enemyHealth = GetComponent<EnemyHealth>();
+        if(animator != null)
+        {
+            animator = GetComponent<Animator>();
+        }
     }
 
     void Update()
@@ -53,10 +58,12 @@ public class EnemyMovement : MonoBehaviour
             {
                 currentPatrolIndex = ++currentPatrolIndex % patrolPoints.Length;           
             }
+            animator.SetBool("isRunning", true);
 
         }
         else
         {
+            animator.SetBool("isRunning", false);
             return;
         }
     }
@@ -65,6 +72,7 @@ public class EnemyMovement : MonoBehaviour
     {
         Vector2 direction = (player.position - transform.position).normalized;
         rb.linearVelocity = new Vector2(direction.x * chaseSpeed, rb.linearVelocity.y);
+        animator.SetBool("isRunning", true );
     }
 
     void OnDrawGizmosSelected()

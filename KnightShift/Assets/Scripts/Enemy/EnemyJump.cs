@@ -3,16 +3,31 @@ using UnityEngine;
 public class EnemyJump : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private bool isGrounded = true;
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+    public LayerMask platformLayer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        //groundCheck = GetComponent<Transform>(); //위치 설정을 덮어쓰므로 groundCheck 방해
     }
-
+    private void Update()
+    {
+        OnGround();
+    }
+    private void OnGround()
+    {
+        isGrounded = (Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer)
+            || Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, platformLayer));
+        Debug.Log("isSlimeGrounded : " + isGrounded);
+    }
     //트리거 충돌 시 점프
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("JumpPoint"))
+        if (other.CompareTag("JumpPoint") && isGrounded)
         {
             var jumpPoint = other.GetComponent<JumpPoint>();
             if (jumpPoint == null) return;
@@ -27,7 +42,7 @@ public class EnemyJump : MonoBehaviour
             switch (jumpPoint.allowedDirection)
             {
                 case JumpPoint.AllowedDirection.Both:
-                    rb.AddForce(Vector2.up.normalized * jumpPoint.jumpForce, ForceMode2D.Impulse);
+                    rb.AddForce((Vector2.up.normalized * jumpPoint.jumpForce), ForceMode2D.Impulse);
                     break;
                 case JumpPoint.AllowedDirection.LeftOnly:
                     if (directionToJumpPoint > 0)
@@ -45,4 +60,13 @@ public class EnemyJump : MonoBehaviour
 
         }
     }
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
+    }
+
 }

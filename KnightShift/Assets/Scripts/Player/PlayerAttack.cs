@@ -30,6 +30,7 @@ public class PlayerAttack : MonoBehaviour
 
     private PlayerHealth playerHealth;
     public GameObject attackEffectPrefab; // 공격 이펙트 프리팹
+    public GameObject blockEffectPrefab;
 
     public GameObject shieldIcon;
 
@@ -67,26 +68,47 @@ public class PlayerAttack : MonoBehaviour
             StartCoroutine(playerAnimation.ActionkCooldownByAimation());
             //StartCoroutine(Shake(shakeDuration, shakeMagnitude));
             GenerateCameraImpulse();
-            Instantiate(attackEffectPrefab, attackHitbox.transform.position, Quaternion.identity);
 
         }
     }
     public void PerformBlock()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) && playerHealth.isAlive)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && playerHealth.isAlive && !playerHealth.isInvincible)
         {
             if (!playerAnimation.isDoingAction && playerHealth.shieldCount > 0)
             {
                 playerAnimation.TriggerBlock();
                 StartCoroutine(playerAnimation.ActionkCooldownByAimation());
-                blockHitbox.SetActive(false);
             }
         }
     }
 
+    // 애니메이션에서 호출
     public void GiveDamage()
     {
+        // 히트박스 활성화
         attackHitbox.SetActive(true);
+        
+        // 이펙트 생성(대상, 위치, 회전, 부모)
+        GameObject effect = Instantiate(attackEffectPrefab, attackHitbox.transform.position, Quaternion.identity, transform);
+        
+        // 이펙트 크기 조절
+        effect.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); // 크기 조절 (필요에 따라 조정)
+
+        // 이펙트가 무조건 지형보다 앞에 보이도록 sorting layer 강제
+        ParticleSystemRenderer[] renderers = effect.GetComponentsInChildren<ParticleSystemRenderer>();
+        foreach (var r in renderers)
+        {
+            r.sortingLayerName = "Foreground";
+            r.sortingOrder = 10;
+        }
+
+        // 이펙트 재생 시간을 ParticleSystem 기반으로 감지해 종료 시 자동 제거
+        ParticleSystem particleSystem = effect.GetComponent<ParticleSystem>();
+        if(particleSystem != null)
+        {
+            Destroy(effect, particleSystem.main.duration);
+        }
     }
 
     public void StopGivingDamage()
@@ -96,38 +118,32 @@ public class PlayerAttack : MonoBehaviour
 
     public void StartBlock()
     {
+
         blockHitbox.SetActive(true);
+
+        GameObject effect = Instantiate(blockEffectPrefab, transform.position, Quaternion.identity, transform);
+
+        effect.transform.localScale = new Vector3(0.18f, 0.18f, 0.18f);
+
+        ParticleSystemRenderer[] renderers = effect.GetComponentsInChildren<ParticleSystemRenderer>();
+        foreach (var r in renderers)
+        {
+            r.sortingLayerName = "Foreground";
+            r.sortingOrder = 10;
+        }
+
+        ParticleSystem particleSystem = effect.GetComponent<ParticleSystem>();
+        if (particleSystem != null)
+        {
+            Destroy(effect, particleSystem.main.duration);
+        }
+        Debug.Log("Block start");
     }
     public void StopBlock()
     {
         blockHitbox.SetActive(false);
+        Debug.Log("Block stop");
     }
-    //public IEnumerator Shake(float duration, float magnitude)
-    //{
-    //    Camera.main.GetComponent<CinemachineBrain>().enabled = false;
-    //    if (Camera.main == null)
-    //    {
-    //        yield break;
-    //    }
-
-    //    float elapsed = 0.0f;
-
-    //    while (elapsed < duration)
-    //    {
-    //        float x = Random.Range(-1f, 1f) * magnitude;
-    //        float y = Random.Range(-1f, 1f) * magnitude;
-
-    //        Camera.main.transform.localPosition
-    //            = new Vector3(Camera.main.transform.localPosition.x + x, originalPos.y + y, -10);
-
-    //        elapsed += Time.deltaTime;
-
-    //        yield return null;
-    //    }
-
-    //    Camera.main.transform.localPosition = originalPos;
-    //    Camera.main.GetComponent<CinemachineBrain>().enabled = true;
-    //}
 
     private void GenerateCameraImpulse()
     {
@@ -145,9 +161,11 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!playerHealth.isAlive) return;
 
-        if (blockHitbox.activeSelf && (other.gameObject.layer == LayerMask.NameToLayer("SlimeAttack") || other.gameObject.layer == LayerMask.NameToLayer("DeathbringerAttack")))
+        if (blockHitbox.activeSelf && 
+            (other.gameObject.layer == LayerMask.NameToLayer("SlimeAttack") || 
+            other.gameObject.layer == LayerMask.NameToLayer("DeathbringerAttack")))
         {
-            playerHealth.shieldCount--;
+            if(playerHealth.shieldCount > 0) playerHealth.shieldCount--;
             GenerateCameraImpulse();
             // 무적 처리
             StartCoroutine(TemporaryInvincibility(parryInvincibilityDuration));
