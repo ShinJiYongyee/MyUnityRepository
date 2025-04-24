@@ -102,13 +102,13 @@ public class EnemyMovement : MonoBehaviour
     void JumpTowardTarget()
     {
         // 표적이 위/아래에 있을 경우 아래점프/점프
-        if (Mathf.Abs(targetPoint.transform.position.x - transform.position.x) < 1)
+        if (Mathf.Abs(targetPoint.transform.position.x - transform.position.x) < 2)
         {
-            if (((targetPoint.transform.position.y - transform.position.y) < -1) && enemyJump.isGrounded)
+            if (((targetPoint.transform.position.y - transform.position.y) < -2) && enemyJump.isGrounded)
             {
                 enemyJump.IgnorePlatformCollisionTemporary(0.5f);
             }
-            else if (((targetPoint.transform.position.y - transform.position.y) > 1) && enemyJump.isGrounded)
+            else if (((targetPoint.transform.position.y - transform.position.y) > 2) && enemyJump.isGrounded)
             {
                 enemyJump.Jump();
             }

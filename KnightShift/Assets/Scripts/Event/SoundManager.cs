@@ -88,7 +88,7 @@ public class SoundManager : MonoBehaviour
         {
             PlayBGM(BGMType.Stage1BGM, 1f);
         }
-        else if (scene.name == "Boss")
+        else if (scene.name == "Stage2")
         {
             PlayBGM(BGMType.Stage1BGM, 1f);
         }
