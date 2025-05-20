@@ -1,0 +1,19 @@
+{
+    "name": "IO",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:1491147abca9d7d4bb7105af628b223e",
+        "GUID:ed26d9966952db448ada1d79d650f5f4",
+        "GUID:b14427b07e6092d48b536fe5dd5e30f5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
