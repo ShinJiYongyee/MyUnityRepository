@@ -1,0 +1,364 @@
+{
+  "data": [
+    {
+      "item_id": 11001,
+      "item_name": "Sword",
+      "attack_power": 10,
+      "defense": 0
+    },
+    {
+      "item_id": 12001,
+      "item_name": "Sword",
+      "attack_power": 20,
+      "defense": 0
+    },
+    {
+      "item_id": 13001,
+      "item_name": "Sword",
+      "attack_power": 30,
+      "defense": 0
+    },
+    {
+      "item_id": 14001,
+      "item_name": "Sword",
+      "attack_power": 40,
+      "defense": 0
+    },
+    {
+      "item_id": 15001,
+      "item_name": "Sword",
+      "attack_power": 50,
+      "defense": 0
+    },
+    {
+      "item_id": 11002,
+      "item_name": "Ax",
+      "attack_power": 20,
+      "defense": 0
+    },
+    {
+      "item_id": 12002,
+      "item_name": "Ax",
+      "attack_power": 30,
+      "defense": 0
+    },
+    {
+      "item_id": 13002,
+      "item_name": "Ax",
+      "attack_power": 40,
+      "defense": 0
+    },
+    {
+      "item_id": 14002,
+      "item_name": "Ax",
+      "attack_power": 50,
+      "defense": 0
+    },
+    {
+      "item_id": 15002,
+      "item_name": "Ax",
+      "attack_power": 60,
+      "defense": 0
+    },
+    {
+      "item_id": 21001,
+      "item_name": "Wooden Shield",
+      "attack_power": 0,
+      "defense": 10
+    },
+    {
+      "item_id": 22001,
+      "item_name": "Wooden Shield",
+      "attack_power": 0,
+      "defense": 20
+    },
+    {
+      "item_id": 23001,
+      "item_name": "Wooden Shield",
+      "attack_power": 0,
+      "defense": 30
+    },
+    {
+      "item_id": 24001,
+      "item_name": "Wooden Shield",
+      "attack_power": 0,
+      "defense": 40
+    },
+    {
+      "item_id": 25001,
+      "item_name": "Wooden Shield",
+      "attack_power": 0,
+      "defense": 50
+    },
+    {
+      "item_id": 21002,
+      "item_name": "Metal Shield",
+      "attack_power": 0,
+      "defense": 20
+    },
+    {
+      "item_id": 22002,
+      "item_name": "Metal Shield",
+      "attack_power": 0,
+      "defense": 30
+    },
+    {
+      "item_id": 23002,
+      "item_name": "Metal Shield",
+      "attack_power": 0,
+      "defense": 40
+    },
+    {
+      "item_id": 24002,
+      "item_name": "Metal Shield",
+      "attack_power": 0,
+      "defense": 50
+    },
+    {
+      "item_id": 25002,
+      "item_name": "Metal Shield",
+      "attack_power": 0,
+      "defense": 60
+    },
+    {
+      "item_id": 31001,
+      "item_name": "Wooden Chest Armor",
+      "attack_power": 10,
+      "defense": 10
+    },
+    {
+      "item_id": 32001,
+      "item_name": "Wooden Chest Armor",
+      "attack_power": 20,
+      "defense": 20
+    },
+    {
+      "item_id": 33001,
+      "item_name": "Wooden Chest Armor",
+      "attack_power": 30,
+      "defense": 30
+    },
+    {
+      "item_id": 34001,
+      "item_name": "Wooden Chest Armor",
+      "attack_power": 40,
+      "defense": 40
+    },
+    {
+      "item_id": 35001,
+      "item_name": "Wooden Chest Armor",
+      "attack_power": 50,
+      "defense": 50
+    },
+    {
+      "item_id": 31002,
+      "item_name": "Metal Chest Armor",
+      "attack_power": 30,
+      "defense": 30
+    },
+    {
+      "item_id": 32002,
+      "item_name": "Metal Chest Armor",
+      "attack_power": 40,
+      "defense": 40
+    },
+    {
+      "item_id": 33002,
+      "item_name": "Metal Chest Armor",
+      "attack_power": 50,
+      "defense": 50
+    },
+    {
+      "item_id": 34002,
+      "item_name": "Metal Chest Armor",
+      "attack_power": 60,
+      "defense": 60
+    },
+    {
+      "item_id": 35002,
+      "item_name": "Metal Chest Armor",
+      "attack_power": 70,
+      "defense": 70
+    },
+    {
+      "item_id": 41001,
+      "item_name": "Leather Gloves",
+      "attack_power": 10,
+      "defense": 10
+    },
+    {
+      "item_id": 42001,
+      "item_name": "Leather Gloves",
+      "attack_power": 20,
+      "defense": 20
+    },
+    {
+      "item_id": 43001,
+      "item_name": "Leather Gloves",
+      "attack_power": 30,
+      "defense": 30
+    },
+    {
+      "item_id": 44001,
+      "item_name": "Leather Gloves",
+      "attack_power": 40,
+      "defense": 40
+    },
+    {
+      "item_id": 45001,
+      "item_name": "Leather Gloves",
+      "attack_power": 50,
+      "defense": 50
+    },
+    {
+      "item_id": 41002,
+      "item_name": "Plate Gauntlets",
+      "attack_power": 20,
+      "defense": 20
+    },
+    {
+      "item_id": 42002,
+      "item_name": "Plate Gauntlets",
+      "attack_power": 30,
+      "defense": 30
+    },
+    {
+      "item_id": 43002,
+      "item_name": "Plate Gauntlets",
+      "attack_power": 40,
+      "defense": 40
+    },
+    {
+      "item_id": 44002,
+      "item_name": "Plate Gauntlets",
+      "attack_power": 50,
+      "defense": 50
+    },
+    {
+      "item_id": 45002,
+      "item_name": "Plate Gauntlets",
+      "attack_power": 60,
+      "defense": 60
+    },
+    {
+      "item_id": 51001,
+      "item_name": "Light Boots",
+      "attack_power": 10,
+      "defense": 10
+    },
+    {
+      "item_id": 52001,
+      "item_name": "Light Boots",
+      "attack_power": 20,
+      "defense": 20
+    },
+    {
+      "item_id": 53001,
+      "item_name": "Light Boots",
+      "attack_power": 30,
+      "defense": 30
+    },
+    {
+      "item_id": 54001,
+      "item_name": "Light Boots",
+      "attack_power": 40,
+      "defense": 40
+    },
+    {
+      "item_id": 55001,
+      "item_name": "Light Boots",
+      "attack_power": 50,
+      "defense": 50
+    },
+    {
+      "item_id": 51002,
+      "item_name": "Heavy Boots",
+      "attack_power": 20,
+      "defense": 20
+    },
+    {
+      "item_id": 52002,
+      "item_name": "Heavy Boots",
+      "attack_power": 30,
+      "defense": 30
+    },
+    {
+      "item_id": 53002,
+      "item_name": "Heavy Boots",
+      "attack_power": 40,
+      "defense": 40
+    },
+    {
+      "item_id": 54002,
+      "item_name": "Heavy Boots",
+      "attack_power": 50,
+      "defense": 50
+    },
+    {
+      "item_id": 55002,
+      "item_name": "Heavy Boots",
+      "attack_power": 60,
+      "defense": 60
+    },
+    {
+      "item_id": 61001,
+      "item_name": "Ring of Protection",
+      "attack_power": 0,
+      "defense": 10
+    },
+    {
+      "item_id": 62001,
+      "item_name": "Ring of Protection",
+      "attack_power": 0,
+      "defense": 20
+    },
+    {
+      "item_id": 63001,
+      "item_name": "Ring of Protection",
+      "attack_power": 0,
+      "defense": 30
+    },
+    {
+      "item_id": 64001,
+      "item_name": "Ring of Protection",
+      "attack_power": 0,
+      "defense": 40
+    },
+    {
+      "item_id": 65001,
+      "item_name": "Ring of Protection",
+      "attack_power": 0,
+      "defense": 50
+    },
+    {
+      "item_id": 61002,
+      "item_name": "Ring of Strength",
+      "attack_power": 10,
+      "defense": 10
+    },
+    {
+      "item_id": 62002,
+      "item_name": "Ring of Strength",
+      "attack_power": 20,
+      "defense": 20
+    },
+    {
+      "item_id": 63002,
+      "item_name": "Ring of Strength",
+      "attack_power": 30,
+      "defense": 30
+    },
+    {
+      "item_id": 64002,
+      "item_name": "Ring of Strength",
+      "attack_power": 40,
+      "defense": 40
+    },
+    {
+      "item_id": 65002,
+      "item_name": "Ring of Strength",
+      "attack_power": 50,
+      "defense": 50
+    }
+  ]
+}

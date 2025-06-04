@@ -151,6 +151,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -497,7 +510,22 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Hit_Effect-Sheet_0: -3468620336290792253
+      Hit_Effect-Sheet_1: 7441801579258810244
+      Hit_Effect-Sheet_10: 2496715705757788950
+      Hit_Effect-Sheet_11: 4400668052477914695
+      Hit_Effect-Sheet_12: -6100115886672382399
+      Hit_Effect-Sheet_13: -3452140265913791659
+      Hit_Effect-Sheet_14: 410209543042076315
+      Hit_Effect-Sheet_2: 9109584701821151919
+      Hit_Effect-Sheet_3: 1985980495803117401
+      Hit_Effect-Sheet_4: 1226329083851359729
+      Hit_Effect-Sheet_5: -6918277787246323416
+      Hit_Effect-Sheet_6: 7954570263004482063
+      Hit_Effect-Sheet_7: -4887365780775236407
+      Hit_Effect-Sheet_8: 8981639664060739436
+      Hit_Effect-Sheet_9: -2705431881841241992
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
