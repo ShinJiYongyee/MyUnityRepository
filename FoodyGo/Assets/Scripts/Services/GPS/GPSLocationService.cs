@@ -1,3 +1,4 @@
+﻿using FoodyGo.Mapping;
 using System;
 using UnityEngine;
 
@@ -6,7 +7,19 @@ namespace FoodyGo.Services.GPS
 
     public class GPSLocationService : MonoBehaviour
     {
-        private ILocationProvider _locationProvider;
+        [Header("Map Tile Settings")]
+        [Tooltip("맵 타일 스케일")]
+        [SerializeField]
+        private int _mapTileScale = 1;
+
+        [Tooltip("맵 타일 크기(픽셀)")]
+        [SerializeField]
+        private int _mapTileSizePixels = 640;
+
+        [Tooltip("맵 타일 배율(1 ~ 20)")]
+        [SerializeField]
+        [Range(1, 20)]
+        private int _mapTileZoomLevel = 15;
 
         [Header("Simulation Settings (Editor Only")]
         [SerializeField] bool _isSimulation;
@@ -19,7 +32,14 @@ namespace FoodyGo.Services.GPS
         public float accuracy { get; private set; }
         public double timeStamp { get; private set; }
 
-        public event Action onLocationUpdated;
+        public event Action onMapRedraw;
+
+        public MapLocation mapCenter;
+        public MapEnvelope mapEnvelope;
+        public Vector3 mapWorldCenter;
+        public Vector3 mapScale;
+
+        private ILocationProvider _locationProvider;
 
         private void Awake()
         {
@@ -53,7 +73,34 @@ namespace FoodyGo.Services.GPS
             accuracy = newAccuracy;
             timeStamp = newTimeStamp;
 
-            onLocationUpdated?.Invoke();
+            if(mapEnvelope.Contains(new MapLocation(latitude, longitude)) == false)
+            {
+                CenterMap();
+            }
+
+            onMapRedraw?.Invoke();
         }
+        private void CenterMap()
+        {
+            mapCenter.latitude = latitude;
+            mapCenter.longitude = longitude;
+            mapWorldCenter.x = GoogleMapUtils.LonToX(mapCenter.longitude);
+            mapWorldCenter.y = GoogleMapUtils.LatToY(mapCenter.latitude);
+
+            mapScale.x = (float)GoogleMapUtils.CalculateScaleX(latitude, _mapTileSizePixels, _mapTileScale, _mapTileZoomLevel);
+            mapScale.y = (float)GoogleMapUtils.CalculateScaleY(longitude, _mapTileSizePixels, _mapTileScale, _mapTileZoomLevel);
+
+            var lon1 = GoogleMapUtils.AdjustLonByPixels(longitude, _mapTileSizePixels / 2, _mapTileZoomLevel);
+            var lat1 = GoogleMapUtils.AdjustLatByPixels(latitude, _mapTileSizePixels / 2, _mapTileZoomLevel);
+
+            var lon2 = GoogleMapUtils.AdjustLonByPixels(longitude, _mapTileSizePixels / 2, _mapTileZoomLevel);
+            var lat2 = GoogleMapUtils.AdjustLatByPixels(latitude, -_mapTileSizePixels / 2, _mapTileZoomLevel);
+
+            mapEnvelope = new MapEnvelope((float)lon1, (float)lat1, (float)lon2, (float)lat2);
+
+            onMapRedraw?.Invoke();
+
+        }
+
     }
 }

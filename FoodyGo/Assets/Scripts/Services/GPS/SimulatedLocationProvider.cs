@@ -84,8 +84,8 @@ namespace FoodyGo.Services.GPS
             double deltaLatitude = currentPosition.z* meterToDegreeLatitude;
             double deltaLongitude = currentPosition.x * meterToDegreeLongitude;
 
-            double newLatitude = startLocation.latitude * deltaLatitude;
-            double newLongitude = startLocation.longitude * deltaLongitude;
+            double newLatitude = startLocation.latitude + deltaLatitude;
+            double newLongitude = startLocation.longitude + deltaLongitude;
 
             onLocationUpdated?.Invoke(newLongitude, newLatitude, 0f, 1f,DateTime.Now.Ticks);
             

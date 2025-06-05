@@ -3,6 +3,7 @@
     /// <summary>
     /// 맵 위치 모델
     /// </summary>
+    [System.Serializable]
     public struct MapLocation
     {
         public MapLocation(double latitude, double longitude)
