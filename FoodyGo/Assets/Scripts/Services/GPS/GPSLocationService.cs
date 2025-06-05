@@ -7,26 +7,28 @@ namespace FoodyGo.Services.GPS
 
     public class GPSLocationService : MonoBehaviour
     {
+        public bool isReady { get; private set; }
+
         [Header("Map Tile Settings")]
         [Tooltip("맵 타일 스케일")]
-        [SerializeField]
-        private int _mapTileScale = 1;
+        [field: SerializeField]
+        public int mapTileScale = 1;
 
         [Tooltip("맵 타일 크기(픽셀)")]
-        [SerializeField]
-        private int _mapTileSizePixels = 640;
+        [field: SerializeField]
+        public int mapTileSizePixels = 640;
 
         [Tooltip("맵 타일 배율(1 ~ 20)")]
-        [SerializeField]
+        [field: SerializeField]
         [Range(1, 20)]
-        private int _mapTileZoomLevel = 15;
+        public int mapTileZoomLevel = 15;
 
         [Header("Simulation Settings (Editor Only")]
         [SerializeField] bool _isSimulation;
         [SerializeField] Transform _simulationTarget;
         [SerializeField] MapLocation _simulationStartLocation = new MapLocation(37.4946, 127.0276056);
 
-        public double latitude {  get; private set; }
+        public double latitude { get; private set; }
         public double longitude { get; private set; }
         public double altitude { get; private set; }
         public float accuracy { get; private set; }
@@ -48,6 +50,7 @@ namespace FoodyGo.Services.GPS
             simulatedLocationProvider.target = _simulationTarget;
             simulatedLocationProvider.startLocation = _simulationStartLocation;
             _locationProvider = simulatedLocationProvider;
+            isReady = true;
 #else
             _locationProvider = gameObject.AddComponent<DeviceLocationProvider>();
 #endif
@@ -73,7 +76,7 @@ namespace FoodyGo.Services.GPS
             accuracy = newAccuracy;
             timeStamp = newTimeStamp;
 
-            if(mapEnvelope.Contains(new MapLocation(latitude, longitude)) == false)
+            if (mapEnvelope.Contains(new MapLocation(latitude, longitude)) == false)
             {
                 CenterMap();
             }
@@ -87,14 +90,14 @@ namespace FoodyGo.Services.GPS
             mapWorldCenter.x = GoogleMapUtils.LonToX(mapCenter.longitude);
             mapWorldCenter.y = GoogleMapUtils.LatToY(mapCenter.latitude);
 
-            mapScale.x = (float)GoogleMapUtils.CalculateScaleX(latitude, _mapTileSizePixels, _mapTileScale, _mapTileZoomLevel);
-            mapScale.y = (float)GoogleMapUtils.CalculateScaleY(longitude, _mapTileSizePixels, _mapTileScale, _mapTileZoomLevel);
+            mapScale.x = (float)GoogleMapUtils.CalculateScaleX(latitude, mapTileSizePixels, mapTileScale, mapTileZoomLevel);
+            mapScale.y = (float)GoogleMapUtils.CalculateScaleY(longitude, mapTileSizePixels, mapTileScale, mapTileZoomLevel);
 
-            var lon1 = GoogleMapUtils.AdjustLonByPixels(longitude, _mapTileSizePixels / 2, _mapTileZoomLevel);
-            var lat1 = GoogleMapUtils.AdjustLatByPixels(latitude, _mapTileSizePixels / 2, _mapTileZoomLevel);
+            var lon1 = GoogleMapUtils.AdjustLonByPixels(longitude, mapTileSizePixels / 2, mapTileZoomLevel);
+            var lat1 = GoogleMapUtils.AdjustLatByPixels(latitude, mapTileSizePixels / 2, mapTileZoomLevel);
 
-            var lon2 = GoogleMapUtils.AdjustLonByPixels(longitude, _mapTileSizePixels / 2, _mapTileZoomLevel);
-            var lat2 = GoogleMapUtils.AdjustLatByPixels(latitude, -_mapTileSizePixels / 2, _mapTileZoomLevel);
+            var lon2 = GoogleMapUtils.AdjustLonByPixels(longitude, mapTileSizePixels / 2, mapTileZoomLevel);
+            var lat2 = GoogleMapUtils.AdjustLatByPixels(latitude, -mapTileSizePixels / 2, mapTileZoomLevel);
 
             mapEnvelope = new MapEnvelope((float)lon1, (float)lat1, (float)lon2, (float)lat2);
 

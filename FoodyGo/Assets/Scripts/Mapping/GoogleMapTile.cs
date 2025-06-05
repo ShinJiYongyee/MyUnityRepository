@@ -21,7 +21,7 @@ namespace FoodyGo.Mapping
 
         [Header("Tile Settings")]
         [Tooltip("타일링을 위한 정수 오프셋")]
-        public Vector2 tileOffset;
+        public Vector2Int tileOffset;
 
         [Tooltip("오프셋 적용한 맵의 중심 위치")]
         public MapLocation tileCenterLocation;
@@ -30,23 +30,34 @@ namespace FoodyGo.Mapping
         public GoogleStaticMapService googleStaticMapService;
 
         [Header("GPS Services")]
-        public GPSLocationService gpsLocationService;
+        public GPSLocationService gpsLocationService
+        {
+            get => _gpsLocationService;
+            set
+            {
+                if(value == _gpsLocationService)
+                {
+                    return;
+                }
+                if(value != null)
+                {
+                    if(_gpsLocationService != null)
+                    {
+                        _gpsLocationService.onMapRedraw -= RefreshMapTile;
+                    }
+                    value.onMapRedraw += RefreshMapTile;
+                }
+                _gpsLocationService = value;
+            }
+        }
+
+        private GPSLocationService _gpsLocationService;
 
         private Renderer _renderer;
 
         private void Awake()
         {
             _renderer = GetComponent<Renderer>();
-        }
-
-        private void OnEnable()
-        {
-            gpsLocationService.onMapRedraw += RefreshMapTile;
-        }
-
-        private void OnDisable()
-        {
-            gpsLocationService.onMapRedraw -= RefreshMapTile;
         }
 
         private void Start()
